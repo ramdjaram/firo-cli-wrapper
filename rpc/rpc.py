@@ -37,4 +37,6 @@ class Rpc:
         if attr in self.methods:
             return self.methods[attr]
         else:
-            raise AttributeError(f"'Rpc' object has no attribute '{attr}'\nAvailable RPC calls:\n{self.methods.keys()}")
+            raise AttributeError(
+                f"'Rpc' object has no attribute '{attr}'\nAvailable RPC calls: {list(self.methods.keys())}"
+            )
