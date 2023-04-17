@@ -1,4 +1,24 @@
-import inspect
+import subprocess
+
+
+def create_method(call):
+    def method(**kwargs):
+        """A dynamically created method"""
+        assert kwargs['address'] is not None, '"Address" should be provided as a key/value argument'
+        assert kwargs['value'] is not None, '"Value" should be provided as a key/value argument'
+        address = kwargs['address']
+        value = kwargs['value']
+        print(f"Executing '{call}' with address '{address}' and value '{value}'")
+
+        # result = subprocess.run( //todo
+        #     ['firo-cli', call, address, value],
+        #     stdout=subprocess.PIPE
+        # )
+        # # Assert that the transaction was successful
+        # assert 'txid' in result.stdout.decode()
+
+        return f'txid{call}'  # result.stdout.decode() //todo
+    return method
 
 
 class Rpc:
@@ -8,16 +28,13 @@ class Rpc:
         if rpc_calls is None:
             raise ValueError('Rpc calls aren`t provided')
 
-        for call in rpc_calls:
-            def method(self, *args, **kwargs):
-                """A dynamically created method"""
-                print(f'args={args} kwargs={kwargs}')
-                return args, kwargs
+        self.methods = {}
 
-            setattr(Rpc, call, method)
+        for call in rpc_calls:
+            self.methods[call] = create_method(call)
 
     def __getattr__(self, attr):
-        class_instance = self.__class__.__name__
-        available_rpc_calls = [key for key, value in inspect.getmembers(Rpc) if not key.startswith('__')]
-        raise AttributeError(f'<{class_instance}> class has no attribute "{attr}".\nAvailable RPC calls:\n{available_rpc_calls}')
-
+        if attr in self.methods:
+            return self.methods[attr]
+        else:
+            raise AttributeError(f"'Rpc' object has no attribute '{attr}'\nAvailable RPC calls:\n{self.methods.keys()}")
