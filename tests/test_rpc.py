@@ -15,3 +15,8 @@ def test_send_firo():
 
     # Assert that the transaction was successful
     assert 'txid' in result.stdout.decode()
+
+
+def test_rpc_connection(rpc_connection):
+    info = rpc_connection.getinfo()
+    print(info)
