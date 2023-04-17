@@ -17,7 +17,7 @@ def create_method(call):
         # # Assert that the transaction was successful
         # assert 'txid' in result.stdout.decode()
 
-        return f'txid{call}'  # result.stdout.decode() //todo
+        return f'txid:{call}'  # result.stdout.decode() //todo
     return method
 
 
@@ -37,6 +37,4 @@ class Rpc:
         if attr in self.methods:
             return self.methods[attr]
         else:
-            raise AttributeError(
-                f"'Rpc' object has no attribute '{attr}'\nAvailable RPC calls: {list(self.methods.keys())}"
-            )
+            raise AttributeError(f"'Rpc' object has no attribute '{attr}'\nAvailable RPC calls: {list(self.methods.keys())}")
