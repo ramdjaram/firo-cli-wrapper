@@ -7,15 +7,23 @@ network = '-regtest'
 def create_method(call):
     def method(**kwargs):
         """A dynamically created method"""
+
         command = ['./firo-cli', network, call]
+
         if kwargs:
             assert kwargs['value'] is not None, '"Value" should be provided as a key/value argument'
-            command.append(kwargs['value'])
+            command.append(kwargs['value'])  # append the values to command
 
         print(f"\nExecuting command: '{' '.join(command)}'")
+
+        # execute the command with firo-cli
         result = subprocess.run(command, stdout=subprocess.PIPE, cwd=directory)
+
+        # decode the result to string
         decoded = result.stdout.decode()
-        return f'Decoded:\n {decoded}'
+        print(f'Decoded result:\n {decoded}')
+
+        return decoded
 
     return method
 
