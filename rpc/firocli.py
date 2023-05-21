@@ -26,9 +26,9 @@ def create_method(call, network, firo_cli_dir):
 
             # decode the result to string
             decoded = result.stdout.decode('utf-8')
+
             print(f'Decoded result:\n {decoded}')
 
-            # return decoded
             return json.loads(decoded)
         except subprocess.CalledProcessError as e:
             error_message = f"Command failed with return code {e.returncode}: {e.output.decode()}"
@@ -47,8 +47,15 @@ class FiroCli:
         if rpc_calls is None:
             raise AttributeError('List of names for rpc calls aren`t provided')
 
+        self._default_rpc_calls = [
+            'gettransaction',
+            'getblockcount',
+            'generate',
+            'getrawtransaction',
+            'sendrawtransaction'
+        ]
         self._firo_cli_directory_path = firo_cli_path
-        self._rpc_calls = ['getrawtransaction', 'sendrawtransaction'] + rpc_calls
+        self._rpc_calls = self._default_rpc_calls + rpc_calls
         self._network = network
         self._methods = {}
 
@@ -60,11 +67,11 @@ class FiroCli:
             return self._methods[attr]
         else:
             raise AttributeError(
-                f"'Rpc' object has no attribute '{attr}'\nAvailable RPC calls: {list(self._methods.keys())}")
+                f"No such command as '{attr}' in 'FiroCli'\nAvailable RPC calls: {list(self._methods.keys())}")
 
     def rebroadcast_transaction(self, txid):
-        raw_tx = self.getrawtransaction(txid)
-        self.sendrawtransaction(raw_tx)
+        raw_tx = self.getrawtransaction(value=txid)
+        self.sendrawtransaction(value=raw_tx)
 
 
 if __name__ == "__main__":
