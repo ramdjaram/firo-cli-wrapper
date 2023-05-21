@@ -16,14 +16,18 @@ def create_method(call):
 
         print(f"\nExecuting command: '{' '.join(command)}'")
 
-        # execute the command with firo-cli
-        result = subprocess.run(command, stdout=subprocess.PIPE, cwd=directory)
+        try:
+            # execute the command with firo-cli
+            result = subprocess.run(command, stdout=subprocess.PIPE, cwd=directory, check=True)
 
-        # decode the result to string
-        decoded = result.stdout.decode()
-        print(f'Decoded result:\n {decoded}')
+            # decode the result to string
+            decoded = result.stdout.decode()
+            print(f'Decoded result:\n {decoded}')
 
-        return decoded
+            return decoded
+        except subprocess.CalledProcessError as e:
+            error_message = f"Command failed with return code {e.returncode}: {e.output.decode()}"
+            raise Exception(error_message)
 
     return method
 
