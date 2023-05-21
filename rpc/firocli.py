@@ -61,8 +61,9 @@ class FiroCli:
             raise AttributeError(
                 f"'Rpc' object has no attribute '{attr}'\nAvailable RPC calls: {list(self._methods.keys())}")
 
-    def rebroadcast_transaction(self):
-        pass
+    def rebroadcast_transaction(self, txid):
+        raw_tx = self.getrawtransaction(txid)
+        self.sendrawtransaction(raw_tx)
 
 
 if __name__ == "__main__":

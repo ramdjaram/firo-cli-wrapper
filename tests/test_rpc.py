@@ -30,3 +30,13 @@ def test_spendspark_bad_arguments(firo_cli):
 def test_spendspark_no_arguments(firo_cli):
     with pytest.raises(Exception):
         firo_cli.spendspark()
+
+
+@pytest.mark.spark
+def test_gettransaction(firo_cli):
+    firo_cli.gettransaction(value='1c1a4161e10ebaeb8922c6549eb3dc26f0348fc697576844e33d235173d3bbed')
+
+
+@pytest.mark.spark
+def test_list_spark_mints(firo_cli):
+    firo_cli.listsparkmints()
