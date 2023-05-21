@@ -9,7 +9,7 @@ def test_getsparkbalance(firo_cli):
 
 
 def test_getsparkbalance(firo_cli):
-    firo_cli.getsparkbalance(bad_key='invalid')
+    firo_cli.getsparkbalance(value='asd', bad_key='invalid')
 
 
 def test_getsparkbalance_invalid_value(firo_cli):
