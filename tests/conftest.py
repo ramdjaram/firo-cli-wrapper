@@ -25,7 +25,7 @@ def rpc_calls():
 
 
 @fixture(scope='module')
-def rpc(rpc_calls):
+def firo_cli(rpc_calls):
     return Rpc(rpc_calls)
 
 

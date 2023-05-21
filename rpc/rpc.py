@@ -17,7 +17,6 @@ def create_method(call):
 
         if kwargs:
             assert kwargs['value'] is not None, invalid_arguments_message
-
             command.append(kwargs['value'])  # append the values to command
 
         print(f"\nExecuting command: '{' '.join(command)}'")
