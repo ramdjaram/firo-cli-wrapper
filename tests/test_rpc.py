@@ -11,3 +11,13 @@ def test_getsparkbalance(rpc):
 def test_getsparkbalance_invalid_value(rpc):
     with pytest.raises(Exception):
         rpc.getsparkbalance(value='invalid value')
+
+
+def test_spendspark_bad_arguments(rpc):
+    with pytest.raises(Exception):
+        rpc.spendspark(value='invalid value')
+
+
+def test_spendspark_no_arguments(rpc):
+    with pytest.raises(Exception):
+        rpc.spendspark()
