@@ -1,13 +1,11 @@
 import subprocess
 from util.helper import json_str_to_dict
 
-directory = '/Users/milanranisavljevic/Workspace/arcadia/firo_spark/src'
-network = '-regtest'
 
-
-def create_method(call):
+def create_method(call, network, firo_cli_dir):
     def method(*args, **kwargs):
         """A dynamically created method"""
+
         invalid_arguments_message = f'Firo-cli command arguments must be key/value pair with "value" as a key. ' \
                                     f'For example: firo_cli.{call}(value=<command_argument_value>)'
 
@@ -24,7 +22,7 @@ def create_method(call):
 
         try:
             # execute the command with firo-cli
-            result = subprocess.run(command, stdout=subprocess.PIPE, cwd=directory, check=True)
+            result = subprocess.run(command, stdout=subprocess.PIPE, cwd=firo_cli_dir, check=True)
 
             # decode the result to string
             decoded = result.stdout.decode()
@@ -38,28 +36,34 @@ def create_method(call):
     return method
 
 
-class Rpc:
+class FiroCli:
 
-    def __init__(self, rpc_calls=None):
+    def __init__(self, firo_cli_path=None, rpc_calls=None, network='-regtest'):
+
+        if firo_cli_path is None:
+            raise AttributeError('Path to the ./firo-cli must be set')
 
         if rpc_calls is None:
-            raise ValueError('Rpc calls aren`t provided')
+            raise AttributeError('List of names for rpc calls aren`t provided')
 
-        self.methods = {}
+        self._firo_cli_directory_path = firo_cli_path
+        self._rpc_calls = rpc_calls
+        self._network = network
+        self._methods = {}
 
-        for call in rpc_calls:
-            self.methods[call] = create_method(call)
+        for call in self._rpc_calls:
+            self._methods[call] = create_method(call, self._network, self._firo_cli_directory_path)
 
     def __getattr__(self, attr):
-        if attr in self.methods:
-            return self.methods[attr]
+        if attr in self._methods:
+            return self._methods[attr]
         else:
             raise AttributeError(
-                f"'Rpc' object has no attribute '{attr}'\nAvailable RPC calls: {list(self.methods.keys())}")
+                f"'Rpc' object has no attribute '{attr}'\nAvailable RPC calls: {list(self._methods.keys())}")
 
 
 if __name__ == "__main__":
     # ./firod must be started
-    rpc = Rpc(['getbalance', 'listaccounts', 'mintspark'])
+    rpc = FiroCli(['getbalance', 'listaccounts', 'mintspark'])
     spark_balance = rpc.getbalance()
     print(spark_balance.availableBalance)
