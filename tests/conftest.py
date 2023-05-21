@@ -10,7 +10,7 @@ def rpc_calls():
         'getsparkbalance',
         'listsparkmints',
         'mintspark',
-        'spentspark',
+        'spendspark',
     ]
 
 
