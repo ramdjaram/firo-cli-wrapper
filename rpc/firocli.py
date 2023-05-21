@@ -18,7 +18,7 @@ def create_method(call, network, firo_cli_dir):
             assert 'value' in kwargs.keys(), f'Invalid command keys: {invalid_key_arguments}. {invalid_arguments_message}'
             command.append(kwargs['value'])  # append the values to command
 
-        print(f"\nExecuting command: '{' '.join(command)}'")
+        print(f"\n{call.upper()}\nExecuting command: '{' '.join(command)}'")
 
         try:
             # execute the command with firo-cli
@@ -27,9 +27,11 @@ def create_method(call, network, firo_cli_dir):
             # decode the result to string
             decoded = result.stdout.decode('utf-8')
 
-            print(f'Decoded result:\n {decoded}')
+            print(f'Result:\n {decoded}')
 
-            return json.loads(decoded)
+            if decoded.startswith(('{', '[')):
+                return json.loads(decoded)
+            return decoded.strip()
         except subprocess.CalledProcessError as e:
             error_message = f"Command failed with return code {e.returncode}: {e.output.decode()}"
             raise Exception(error_message)
@@ -70,8 +72,8 @@ class FiroCli:
                 f"No such command as '{attr}' in 'FiroCli'\nAvailable RPC calls: {list(self._methods.keys())}")
 
     def rebroadcast_transaction(self, txid):
-        raw_tx = self.getrawtransaction(value=txid)
-        self.sendrawtransaction(value=raw_tx)
+        raw_tx = self.getrawtransaction(value=txid.strip())
+        self.sendrawtransaction(value=raw_tx.strip())
 
 
 if __name__ == "__main__":
