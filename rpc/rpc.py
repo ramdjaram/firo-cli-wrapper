@@ -5,13 +5,18 @@ network = '-regtest'
 
 
 def create_method(call):
-    def method(**kwargs):
+    def method(*args, **kwargs):
         """A dynamically created method"""
+        invalid_arguments_message = 'Firo-cli arguments must be provided as key/value pairs with "value" as a key. ' \
+                                    'For example: rpc.getsparkaddressbalance(value="<spark_address>")'
+
+        assert not args, invalid_arguments_message
 
         command = ['./firo-cli', network, call]
 
         if kwargs:
-            assert kwargs['value'] is not None, '"Value" should be provided as a key/value argument'
+            assert kwargs['value'] is not None, invalid_arguments_message
+
             command.append(kwargs['value'])  # append the values to command
 
         print(f"\nExecuting command: '{' '.join(command)}'")
