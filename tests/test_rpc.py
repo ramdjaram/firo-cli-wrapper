@@ -1,8 +1,13 @@
-from util.helper import json_str_to_dict
+import pytest
 
 
 def test_getsparkbalance(rpc):
     spark_balance = rpc.getsparkbalance()
-    print(json_str_to_dict(spark_balance)['availableBalance'])
-    print(json_str_to_dict(spark_balance)['unconfirmedBalance'])
-    print(json_str_to_dict(spark_balance)['fullBalance'])
+    print(spark_balance['availableBalance'])
+    print(spark_balance['unconfirmedBalance'])
+    print(spark_balance['fullBalance'])
+
+
+def test_getsparkbalance_invalid_value(rpc):
+    with pytest.raises(Exception):
+        rpc.getsparkbalance(value='invalid value')

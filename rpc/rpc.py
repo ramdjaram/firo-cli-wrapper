@@ -1,4 +1,5 @@
 import subprocess
+from util.helper import json_str_to_dict
 
 directory = '/Users/milanranisavljevic/Workspace/arcadia/firo_spark/src'
 network = '-regtest'
@@ -29,7 +30,7 @@ def create_method(call):
             decoded = result.stdout.decode()
             print(f'Decoded result:\n {decoded}')
 
-            return decoded
+            return json_str_to_dict(decoded)
         except subprocess.CalledProcessError as e:
             error_message = f"Command failed with return code {e.returncode}: {e.output.decode()}"
             raise Exception(error_message)
