@@ -20,7 +20,7 @@ def rpc_calls():
         'resetsparkmints',
         'mintspark',
         'spendspark',
-        'lelantustospark',
+        'lelantustospark'
     ]
 
 

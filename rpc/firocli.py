@@ -47,7 +47,7 @@ class FiroCli:
             raise AttributeError('List of names for rpc calls aren`t provided')
 
         self._firo_cli_directory_path = firo_cli_path
-        self._rpc_calls = rpc_calls
+        self._rpc_calls = ['getrawtransaction', 'sendrawtransaction'] + rpc_calls
         self._network = network
         self._methods = {}
 
@@ -60,6 +60,9 @@ class FiroCli:
         else:
             raise AttributeError(
                 f"'Rpc' object has no attribute '{attr}'\nAvailable RPC calls: {list(self._methods.keys())}")
+
+    def rebroadcast_transaction(self):
+        pass
 
 
 if __name__ == "__main__":
