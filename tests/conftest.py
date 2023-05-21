@@ -7,10 +7,20 @@ from rpc import *
 @fixture(scope='module')
 def rpc_calls():
     return [
-        'getsparkbalance',
+        'listunspentsparkmints',
         'listsparkmints',
+        'listsparkspends',
+        'getsparkdefaultaddress',
+        'getallsparkaddresses',
+        'getnewsparkaddress',
+        'getsparkbalance',
+        'getsparkaddressbalance',
+        'resetsparkmints',
+        'setsparkmintstatus',
+        'resetsparkmints',
         'mintspark',
         'spendspark',
+        'lelantustospark',
     ]
 
 
@@ -28,4 +38,3 @@ def rpc_connection():
 
     rpc_connection = AuthServiceProxy(f"http://{rpc_user}:{rpc_password}@{rpc_host}:{rpc_port}")
     return rpc_connection.getinfo()
-
