@@ -1,5 +1,5 @@
 import subprocess
-from util.helper import json_str_to_dict
+import json
 
 
 def create_method(call, network, firo_cli_dir):
@@ -25,10 +25,11 @@ def create_method(call, network, firo_cli_dir):
             result = subprocess.run(command, stdout=subprocess.PIPE, cwd=firo_cli_dir, check=True)
 
             # decode the result to string
-            decoded = result.stdout.decode()
+            decoded = result.stdout.decode('utf-8')
             print(f'Decoded result:\n {decoded}')
 
-            return json_str_to_dict(decoded)
+            # return decoded
+            return json.loads(decoded)
         except subprocess.CalledProcessError as e:
             error_message = f"Command failed with return code {e.returncode}: {e.output.decode()}"
             raise Exception(error_message)
