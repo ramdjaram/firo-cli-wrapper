@@ -1,23 +1,22 @@
 import subprocess
 
+directory = '/Users/milanranisavljevic/Workspace/arcadia/firo_spark/src'
+network = '-regtest'
+
 
 def create_method(call):
     def method(**kwargs):
         """A dynamically created method"""
-        assert kwargs['address'] is not None, '"Address" should be provided as a key/value argument'
-        assert kwargs['value'] is not None, '"Value" should be provided as a key/value argument'
-        address = kwargs['address']
-        value = kwargs['value']
-        print(f"Executing '{call}' with address '{address}' and value '{value}'")
+        command = ['./firo-cli', network, call]
+        if kwargs:
+            assert kwargs['value'] is not None, '"Value" should be provided as a key/value argument'
+            command.append(kwargs['value'])
 
-        # result = subprocess.run( //todo
-        #     ['firo-cli', call, address, value],
-        #     stdout=subprocess.PIPE
-        # )
-        # # Assert that the transaction was successful
-        # assert 'txid' in result.stdout.decode()
+        print(f"\nExecuting command: '{' '.join(command)}'")
+        result = subprocess.run(command, stdout=subprocess.PIPE, cwd=directory)
+        decoded = result.stdout.decode()
+        return f'Decoded:\n {decoded}'
 
-        return f'txid:{call}'  # result.stdout.decode() //todo
     return method
 
 
@@ -37,4 +36,12 @@ class Rpc:
         if attr in self.methods:
             return self.methods[attr]
         else:
-            raise AttributeError(f"'Rpc' object has no attribute '{attr}'\nAvailable RPC calls: {list(self.methods.keys())}")
+            raise AttributeError(
+                f"'Rpc' object has no attribute '{attr}'\nAvailable RPC calls: {list(self.methods.keys())}")
+
+
+if __name__ == "__main__":
+    # ./firod must be started
+    rpc = Rpc(['getbalance', 'listaccounts', 'mintspark'])
+    spark_balance = rpc.getbalance()
+    print(spark_balance.availableBalance)

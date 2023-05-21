@@ -7,7 +7,8 @@ from rpc import *
 @fixture(scope='module')
 def rpc_calls():
     return [
-        'listsparkminds',
+        'getsparkbalance',
+        'listsparkmints',
         'mintspark',
         'spentspark',
     ]
