@@ -4,7 +4,7 @@ from util.logger import logger
 from util.helper import is_valid_dict_string, print_command_title
 
 
-def create_method(call, network, firo_src_dir, datadir):
+def create_method(call, network, firo_src_dir, datadir=''):
     def method(*args, **kwargs):
         """A dynamically created method"""
 
@@ -13,7 +13,10 @@ def create_method(call, network, firo_src_dir, datadir):
 
         assert not args, invalid_arguments_message
 
-        command = ['./firo-cli', network, datadir, call]
+        if not datadir:
+            command = ['./firo-cli', network, call]
+        else:
+            command = ['./firo-cli', network, datadir, call]
 
         if kwargs:
             invalid_key_arguments = [key for key in kwargs.keys() if key != 'input']
@@ -60,7 +63,7 @@ class FiroCli:
         self._rpc_calls = self._default_rpc_calls + rpc_calls
         self._network = network
         self._firo_src = firo_src_path
-        self._datadir = f'-datadir={datadir}'
+        self._datadir = f'-datadir={datadir}' if datadir else ''
         self._methods = {}
 
         for call in self._rpc_calls:
