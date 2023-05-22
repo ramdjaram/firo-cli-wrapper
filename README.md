@@ -1,8 +1,13 @@
 ## FIRO-CLI TEST TOOL
 
-> When rebuilding `make clean` then `make`
+>### RUNNING TESTS
+> 
+>`pytest -m 'noargs' --html=report.html`
+
 
 ### BUILD
+
+> When rebuilding `make clean` then `make`
 1. cd depends
 2. make -j`nproc`
 3. cd ..
