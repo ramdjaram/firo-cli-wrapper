@@ -24,7 +24,7 @@
 `generate 1000`
 
 
-#### COMMANDS
+#### RPC's
 - [X] listunspentsparkmints
 - [X] listsparkmints
 - [X] listsparkspends
