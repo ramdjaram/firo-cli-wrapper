@@ -30,4 +30,11 @@ def print_command_title(rpc_call, command, symbol):
     half_line = f'{int(rpc_call_len / 2) * symbol}'
     cli_command = ' '.join(command)
     underline = f'{(len(cli_command) + 4) * "_"}\n'
-    logger.info(f"{line}{half_line} {rpc_call.upper()} {half_line}{line}{underline}Cli Command:\n\t{cli_command}\n")
+    logger.info(f"Title:\n"
+                f"{line}"  # upper title wrapper
+                f"{half_line} {rpc_call.upper()} {half_line}"  # uppercase command title
+                f"{line}"  # under title wrapper
+                f"{underline}" 
+                f"Cli Command:\n"  # command label
+                f"\t{cli_command}\n"  # actual executed command
+                f"{underline}")
