@@ -41,7 +41,7 @@ def create_method(call, network, firo_cli_dir):
 
 class FiroCli:
 
-    def __init__(self, firo_cli_path=None, rpc_calls=None, network='-regtest'):
+    def __init__(self, rpc_calls=None, network='-regtest', firo_cli_path=None):
 
         if firo_cli_path is None:
             raise AttributeError('Path to the ./firo-cli must be set')
@@ -50,21 +50,21 @@ class FiroCli:
             raise AttributeError('List of names for rpc calls aren`t provided')
 
         self._default_rpc_calls = [
-            'gettransaction',
+            'getrawtransaction',
+            'sendrawtransaction',
             'getblockcount',
             'generate',
-            'getrawtransaction',
-            'sendrawtransaction'
+            'gettransaction',
         ]
-        self._firo_cli_directory_path = firo_cli_path
         self._rpc_calls = self._default_rpc_calls + rpc_calls
         self._network = network
+        self._firo_cli_directory_path = firo_cli_path
         self._methods = {}
 
         for call in self._rpc_calls:
             self._methods[call] = create_method(call, self._network, self._firo_cli_directory_path)
 
-        print_command_title('Firo-Cli', ['[firo-cli]', '<network>', '<rpc_call>', '<input>'], '%')
+        print_command_title('Firo-Cli Testing Tool', ['[firo-cli]', '<network>', '<rpc_call>', '<input>'], '%')
         print(f'[firo-cli] directory path:\t\t\t{firo_cli_path}')
         print(f'[network] used for testing:\t\t\t{network}')
         print(f'[list of integrated rpc calls]:\t\t{self._default_rpc_calls}')

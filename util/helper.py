@@ -11,7 +11,7 @@ def is_valid_dict_string(string):
         if isinstance(obj, dict) or isinstance(obj, list):
             return True
     except ValueError:
-        print(f'String\n(\n\t{string}\n) is not an instance of dict or list, parsing skipped')
+        print(f'String is not an instance of dict or list, parsing skipped.\n{string}')
     return False
 
 

@@ -1,32 +1,29 @@
 from pytest import fixture
 from rpc import *
 
-firo_cli_directory_path = '/Users/milanranisavljevic/Workspace/arcadia/firo_spark/src'
+FIRO_CLI_DIRECTORY_PATH = '/Users/milanranisavljevic/Workspace/arcadia/firo_spark/src'
+NETWORK = '-regtest'
+RPC_CALLS = [
+    'listunspentsparkmints',
+    'listsparkmints',
+    'listsparkspends',
+    'getsparkdefaultaddress',
+    'getallsparkaddresses',
+    'getnewsparkaddress',
+    'getsparkbalance',
+    'getsparkaddressbalance',
+    'resetsparkmints',
+    'setsparkmintstatus',
+    'resetsparkmints',
+    'mintspark',
+    'spendspark',
+    'lelantustospark'
+]
 
 
 @fixture(scope='module')
-def rpc_calls():
-    return [
-        'listunspentsparkmints',
-        'listsparkmints',
-        'listsparkspends',
-        'getsparkdefaultaddress',
-        'getallsparkaddresses',
-        'getnewsparkaddress',
-        'getsparkbalance',
-        'getsparkaddressbalance',
-        'resetsparkmints',
-        'setsparkmintstatus',
-        'resetsparkmints',
-        'mintspark',
-        'spendspark',
-        'lelantustospark'
-    ]
-
-
-@fixture(scope='module')
-def firo_cli(rpc_calls):
-    return FiroCli(firo_cli_directory_path, rpc_calls)
+def firo_cli():
+    return FiroCli(rpc_calls=RPC_CALLS, firo_cli_path=FIRO_CLI_DIRECTORY_PATH)
 
 
 @fixture(scope='module')
