@@ -75,5 +75,5 @@ def test_mintspark_and_generate(firo_cli, input_mintspark, test_data):
 
     spark_balance_after_transaction = firo_cli.getsparkbalance()['availableBalance']
     difference = spark_balance_after_transaction - spark_balance_initial
-    logger.info('Difference: ', difference)
+    logger.info(f'Difference: {difference}')
     assert difference == int(float(test_data['amount']) * 100000000)

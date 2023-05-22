@@ -28,7 +28,7 @@ def create_method(call, network, firo_cli_dir):
 
             # decode the result to string
             decoded = result.stdout.decode('utf-8')
-            logger.debug(f'\nResult:\n{decoded}')
+            logger.debug(f'Result:\n{decoded}')
 
             if is_valid_dict_string(decoded):  # parse if json string
                 return json.loads(decoded)
