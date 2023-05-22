@@ -1,5 +1,5 @@
-import subprocess
 import json
+import subprocess
 
 
 def create_method(call, network, firo_cli_dir):
@@ -16,7 +16,7 @@ def create_method(call, network, firo_cli_dir):
         if kwargs:
             invalid_key_arguments = [key for key in kwargs.keys() if key != 'value']
             assert 'value' in kwargs.keys(), f'Invalid command keys: {invalid_key_arguments}. {invalid_arguments_message}'
-            command.append(kwargs['value'])  # append the values to command
+            command.append(str(kwargs['value']))  # append the values to command
 
         print(f"\n{call.upper()}\nExecuting command: '{' '.join(command)}'")
 
@@ -26,10 +26,9 @@ def create_method(call, network, firo_cli_dir):
 
             # decode the result to string
             decoded = result.stdout.decode('utf-8')
+            print(f'Result:\n {decoded}\n{80*"="}')
 
-            print(f'Result:\n {decoded}')
-
-            if decoded.startswith(('{', '[')):
+            if decoded.startswith(('{', '[')):  # parse if json string
                 return json.loads(decoded)
             return decoded.strip()
         except subprocess.CalledProcessError as e:

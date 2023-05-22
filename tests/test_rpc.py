@@ -1,3 +1,4 @@
+import json
 import pytest
 from time import sleep
 
@@ -51,6 +52,8 @@ def test_gettransaction(firo_cli):
 @pytest.mark.spark
 def test_get_spark_balance(firo_cli):
 
+    amount = "0.014"
+
     spark_balance_initial = firo_cli.getsparkbalance()['availableBalance']
 
     spark_addresses = firo_cli.getallsparkaddresses()
@@ -59,19 +62,24 @@ def test_get_spark_balance(firo_cli):
 
     firo_cli.getblockcount()
 
-    txids_list = firo_cli.mintspark(value="{\"sr1jdq5f3kfdut63dwtqslpn9wq8g0hwuecvcl4j8dulu8tl4ant6kcvmlc0a6yas0gxdwdnjr9cuwggjgzqr3vyzrefvfn9fx46kx22s9stl9rs0gcdw4ee5j54u3q2zw9q8ynf0g4uyntz\":{\"amount\":0.01, \"memo\":\"test_memo\"}}")
+    mint_dict = {
+        'sr1jdq5f3kfdut63dwtqslpn9wq8g0hwuecvcl4j8dulu8tl4ant6kcvmlc0a6yas0gxdwdnjr9cuwggjgzqr3vyzrefvfn9fx46kx22s9stl9rs0gcdw4ee5j54u3q2zw9q8ynf0g4uyntz': {
+            'amount': amount, 'memo': 'test_memo'
+        }
+    }
+    # txids_list = firo_cli.mintspark(value=json.dumps(mint_dict))
+    #
+    # for txid in txids_list:
+    #     firo_cli.rebroadcast_transaction(txid)
 
-    for txid in txids_list:
-        firo_cli.rebroadcast_transaction(txid)
-
-    firo_cli.generate(value='1')
+    firo_cli.generate(value=1)
 
     firo_cli.getblockcount()
 
     spark_balance_after_transaction = firo_cli.getsparkbalance()['availableBalance']
-    difference = spark_balance_after_transaction-spark_balance_initial
-    print("DIFFERENCE: ", difference)
-    assert difference == 1000000
+    difference = spark_balance_after_transaction - spark_balance_initial
+    print('DIFFERENCE: ', difference)
+    assert difference == float(amount) * 100000000
 
     spark_addresses = firo_cli.getallsparkaddresses()
     for value in spark_addresses.values():
