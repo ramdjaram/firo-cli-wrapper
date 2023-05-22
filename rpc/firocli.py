@@ -1,5 +1,6 @@
 import json
 import subprocess
+from util.helper import is_valid_dict_string, print_command_title
 
 
 def create_method(call, network, firo_cli_dir):
@@ -16,9 +17,9 @@ def create_method(call, network, firo_cli_dir):
         if kwargs:
             invalid_key_arguments = [key for key in kwargs.keys() if key != 'value']
             assert 'value' in kwargs.keys(), f'Invalid command keys: {invalid_key_arguments}. {invalid_arguments_message}'
-            command.append(str(kwargs['value']))  # append the values to command
+            command.append(str(kwargs['value']))  # append the values to command and parse the arguments to strings
 
-        print(f"\n{call.upper()}\nExecuting command: '{' '.join(command)}'")
+        print_command_title(call, command)
 
         try:
             # execute the command with firo-cli
@@ -26,9 +27,9 @@ def create_method(call, network, firo_cli_dir):
 
             # decode the result to string
             decoded = result.stdout.decode('utf-8')
-            print(f'Result:\n {decoded}\n{80*"="}')
+            print(f'Result:\n {decoded}')
 
-            if decoded.startswith(('{', '[')):  # parse if json string
+            if is_valid_dict_string(decoded):  # parse if json string
                 return json.loads(decoded)
             return decoded.strip()
         except subprocess.CalledProcessError as e:
