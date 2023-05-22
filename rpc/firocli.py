@@ -1,6 +1,6 @@
 import json
 import subprocess
-from util.helper import is_valid_dict_string, print_command_title, stringify
+from util.utility import is_valid_dict_string, print_command_title
 
 
 def create_method(call, network, firo_cli_dir):

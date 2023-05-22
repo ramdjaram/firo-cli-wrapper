@@ -1,6 +1,5 @@
 import pytest
 from time import sleep
-from util.helper import stringify
 
 
 def test_getsparkbalance(firo_cli):

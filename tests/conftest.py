@@ -1,8 +1,7 @@
 import os
 from rpc import *
 from pytest import fixture
-from util.helper import load_json_file
-
+from util.utility import load_json_file, stringify
 
 # CONSTANTS
 WORKSPACE = 'Workspace/arcadia/firo_spark/src'
