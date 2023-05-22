@@ -16,7 +16,8 @@ def test_getsparkbalance_invalid_key(firo_cli):
 
 
 def test_getsparkbalance_valid_and_invalid_key(firo_cli):
-    firo_cli.getsparkbalance(input='valid key', bad_key='invalid')
+    with pytest.raises(Exception):
+        firo_cli.getsparkbalance(input='valid key', bad_key='invalid')
 
 
 def test_getsparkbalance_invalid_value(firo_cli):
