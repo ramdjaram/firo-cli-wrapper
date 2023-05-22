@@ -1,14 +1,14 @@
 import json
 import subprocess
-from util.helper import is_valid_dict_string, print_command_title
+from util.helper import is_valid_dict_string, print_command_title, stringify
 
 
 def create_method(call, network, firo_cli_dir):
     def method(*args, **kwargs):
         """A dynamically created method"""
 
-        invalid_arguments_message = f'Firo-cli command arguments must be key/value pair with "value" as a key. ' \
-                                    f'For example: firo_cli.{call}(value=<command_argument_value>)'
+        invalid_arguments_message = f'Firo-cli command arguments must be key/value pair with "input" as a key. ' \
+                                    f'For example: firo_cli.{call}(input=<command_argument_value>)'
 
         assert not args, invalid_arguments_message
 
@@ -16,8 +16,8 @@ def create_method(call, network, firo_cli_dir):
 
         if kwargs:
             invalid_key_arguments = [key for key in kwargs.keys() if key != 'value']
-            assert 'value' in kwargs.keys(), f'Invalid command keys: {invalid_key_arguments}. {invalid_arguments_message}'
-            command.append(str(kwargs['value']))  # append the values to command and parse the arguments to strings
+            assert 'input' in kwargs.keys(), f'Invalid command keys: {invalid_key_arguments}. {invalid_arguments_message}'
+            command.append(str(kwargs['input']))  # append the arg value to command and parse the arg to string
 
         print_command_title(call, command)
 
@@ -72,8 +72,8 @@ class FiroCli:
                 f"No such command as '{attr}' in 'FiroCli'\nAvailable RPC calls: {list(self._methods.keys())}")
 
     def rebroadcast_transaction(self, txid):
-        raw_tx = self.getrawtransaction(value=txid.strip())
-        self.sendrawtransaction(value=raw_tx.strip())
+        raw_tx = self.getrawtransaction(input=txid.strip())
+        self.sendrawtransaction(input=raw_tx.strip())
 
 
 if __name__ == "__main__":
