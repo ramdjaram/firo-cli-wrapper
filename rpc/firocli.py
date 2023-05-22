@@ -64,6 +64,7 @@ class FiroCli:
         for call in self._rpc_calls:
             self._methods[call] = create_method(call, self._network, self._firo_cli_directory_path)
 
+        print('\n\n')
         print_command_title('Firo-Cli Testing Tool', ['[firo-cli]', '<network>', '<rpc_call>', '<input>'], '%')
         print(f'[firo-cli] directory path:\t\t\t{firo_cli_path}')
         print(f'[network] used for testing:\t\t\t{network}')

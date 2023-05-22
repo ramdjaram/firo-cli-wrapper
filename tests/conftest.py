@@ -1,5 +1,6 @@
-from pytest import fixture
 from rpc import *
+from pytest import fixture
+from util.helper import load_json_file
 
 # CONSTANTS
 FIRO_CLI_DIRECTORY_PATH = '/Users/milanranisavljevic/Workspace/arcadia/firo_spark/src'
@@ -31,10 +32,7 @@ def firo_cli():
 # TEST DATA
 @fixture(scope='module')
 def test_data():
-    return {
-        'amount': '0.0000123',
-        'p_address': 'sr1rjrgek8hka2x2nhuhlw2ptxatryv0mfmp6qy9yehhnlrnzhdpjewg5tdvtwq7upycx78tf9xp09jchgwzzrrmne5k626qrp30kkrt5aluzns2l3cmh7dajlymtrzxf4wujl8tyc9yuqrz'
-    }
+    return load_json_file(r'/Users/milanranisavljevic/Workspace/firo-cli/data/data.json')
 
 
 # INPUTS

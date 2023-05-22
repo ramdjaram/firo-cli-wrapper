@@ -24,3 +24,9 @@ def print_command_title(rpc_call, command, symbol):
     cli_command = ' '.join(command)
     underline = f'{(len(cli_command)+4) * "_"}\n'
     print(f"{line}{half_line} {rpc_call.upper()} {half_line}{line}{underline}Cli Command:\n\t{cli_command}\n")
+
+
+def load_json_file(file_path):
+    with open(file_path, 'r') as file:
+        data = json.load(file)
+    return data
