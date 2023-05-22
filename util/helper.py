@@ -1,4 +1,5 @@
 import json
+from util.logger import logger
 
 
 def load_json_file(file_path):
@@ -17,7 +18,7 @@ def is_valid_dict_string(string):
         if isinstance(obj, dict) or isinstance(obj, list):
             return True
     except ValueError:
-        print(f'String is not an instance of dict or list, parsing skipped.\n{string}')
+        logger.info(f'String is not an instance of dict or list, parsing skipped.\n{string}')
     return False
 
 
@@ -29,4 +30,4 @@ def print_command_title(rpc_call, command, symbol):
     half_line = f'{int(rpc_call_len / 2) * symbol}'
     cli_command = ' '.join(command)
     underline = f'{(len(cli_command) + 4) * "_"}\n'
-    print(f"{line}{half_line} {rpc_call.upper()} {half_line}{line}{underline}Cli Command:\n\t{cli_command}\n")
+    logger.info(f"{line}{half_line} {rpc_call.upper()} {half_line}{line}{underline}Cli Command:\n\t{cli_command}\n")

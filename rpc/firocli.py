@@ -28,7 +28,7 @@ def create_method(call, network, firo_cli_dir):
 
             # decode the result to string
             decoded = result.stdout.decode('utf-8')
-            logger.debug(f'Result:\n{decoded}')
+            logger.debug(f'\nResult:\n{decoded}')
 
             if is_valid_dict_string(decoded):  # parse if json string
                 return json.loads(decoded)
@@ -65,11 +65,13 @@ class FiroCli:
         for call in self._rpc_calls:
             self._methods[call] = create_method(call, self._network, self._firo_cli_directory_path)
 
+        self.info()
+
+    def info(self):
         print_command_title('Firo-Cli Testing Tool', ['[firo-cli]', '<network>', '<rpc_call>', '<input>'], '%')
-        logger.info(f'[firo-cli] directory path: {firo_cli_path}')
-        logger.info(f'[network] used for testing: {network}')
-        logger.info(f'[list of integrated rpc calls]: {self._default_rpc_calls}')
-        logger.info(f'[list of rpc calls under test]: {rpc_calls}')
+        logger.info(f'[firo-cli] directory path: {self._firo_cli_directory_path}')
+        logger.info(f'[network] used for testing: {self._network}')
+        logger.info(f'[list of supported rpc calls]: {self._default_rpc_calls}')
 
     def __getattr__(self, attr):
         if attr in self._methods:
@@ -85,6 +87,7 @@ class FiroCli:
 
 if __name__ == "__main__":
     import os
+
     logger.info(os.getcwd())
     logger.info(os.path.expanduser('-'))
     logger.info(os.environ)
