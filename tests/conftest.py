@@ -3,28 +3,13 @@ from pytest import fixture
 from util import load_json_file, stringify, config
 
 
-RPC_CALLS = [
-    'listunspentsparkmints',
-    'listsparkmints',
-    'listsparkspends',
-    'getsparkdefaultaddress',
-    'getallsparkaddresses',
-    'getnewsparkaddress',
-    'getsparkbalance',
-    'getsparkaddressbalance',
-    'resetsparkmints',
-    'setsparkmintstatus',
-    'resetsparkmints',
-    'mintspark',
-    'spendspark',
-    'lelantustospark'
-]
-
-
 # FIRO-CLI
 @fixture(scope='module')
 def firo_cli():
-    return FiroCli(rpc_calls=RPC_CALLS, firo_src_path=config['FIRO']['cli_path'], datadir=config['FIRO']['blockchain_datadir'])
+    return FiroCli(
+        rpc_calls=config.get('FIRO', 'spark_calls'),
+        firo_src_path=config.get('FIRO', 'cli_path'),
+        datadir=config.get('FIRO', 'blockchain_datadir'))
 
 
 # TEST DATA

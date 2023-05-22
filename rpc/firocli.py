@@ -60,7 +60,8 @@ class FiroCli:
             'generate',
             'gettransaction',
         ]
-        self._rpc_calls = self._default_rpc_calls + rpc_calls
+
+        self._rpc_calls = set(self._default_rpc_calls + [item.strip() for item in rpc_calls.split(',')])
         self._network = network
         self._firo_src = firo_src_path
         self._datadir = f'-datadir={datadir}' if datadir else ''
