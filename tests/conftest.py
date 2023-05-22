@@ -1,6 +1,7 @@
 from pytest import fixture
 from rpc import *
 
+# CONSTANTS
 FIRO_CLI_DIRECTORY_PATH = '/Users/milanranisavljevic/Workspace/arcadia/firo_spark/src'
 NETWORK = '-regtest'
 RPC_CALLS = [
@@ -21,11 +22,32 @@ RPC_CALLS = [
 ]
 
 
+# FIRO-CLI
 @fixture(scope='module')
 def firo_cli():
     return FiroCli(rpc_calls=RPC_CALLS, firo_cli_path=FIRO_CLI_DIRECTORY_PATH)
 
 
+# TEST DATA
+@fixture(scope='module')
+def test_data():
+    return {
+        'amount': '0.0000123',
+        'p_address': 'sr1rjrgek8hka2x2nhuhlw2ptxatryv0mfmp6qy9yehhnlrnzhdpjewg5tdvtwq7upycx78tf9xp09jchgwzzrrmne5k626qrp30kkrt5aluzns2l3cmh7dajlymtrzxf4wujl8tyc9yuqrz'
+    }
+
+
+# INPUTS
+@fixture(scope='module')
+def input_mintspark(test_data):
+    return stringify({
+        test_data['p_address']: {
+            'amount': test_data['amount'], 'memo': 'test_memo'
+        }
+    })
+
+
+# DONO WHAT FOR, MAYBE USEFUll
 @fixture(scope='module')
 def spark_addresses():
     return {

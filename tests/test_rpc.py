@@ -50,36 +50,29 @@ def test_gettransaction(firo_cli):
 
 
 @pytest.mark.spark
-def test_mintspark_and_generate(firo_cli):
-
-    amount = "0.0000123"
-
+def test_mintspark_and_generate(firo_cli, input_mintspark, test_data):
     spark_balance_initial = firo_cli.getsparkbalance()['availableBalance']
 
     spark_addresses = firo_cli.getallsparkaddresses()
-    for value in spark_addresses.values():
-        firo_cli.getsparkaddressbalance(input=value)
+    for p_address in spark_addresses.values():
+        firo_cli.getsparkaddressbalance(input=p_address)
 
-    firo_cli.getblockcount()
+    block_number = firo_cli.getblockcount()
 
-    mint_trasaction = {
-        'sr1rjrgek8hka2x2nhuhlw2ptxatryv0mfmp6qy9yehhnlrnzhdpjewg5tdvtwq7upycx78tf9xp09jchgwzzrrmne5k626qrp30kkrt5aluzns2l3cmh7dajlymtrzxf4wujl8tyc9yuqrz': {
-            'amount': amount, 'memo': 'test_memo'
-        }
-    }
-    txids_list = firo_cli.mintspark(input=stringify(mint_trasaction))
-    for txid in txids_list:
+    list_of_txids = firo_cli.mintspark(input=input_mintspark)
+    for txid in list_of_txids:
         firo_cli.rebroadcast_transaction(txid)
 
     firo_cli.generate(input=1)
 
-    firo_cli.getblockcount()
+    next_block_number = firo_cli.getblockcount()
+    assert int(block_number) + 1 == int(next_block_number)
 
     spark_addresses = firo_cli.getallsparkaddresses()
-    for value in spark_addresses.values():
-        firo_cli.getsparkaddressbalance(input=value)
+    for p_address in spark_addresses.values():
+        firo_cli.getsparkaddressbalance(input=p_address)
 
     spark_balance_after_transaction = firo_cli.getsparkbalance()['availableBalance']
     difference = spark_balance_after_transaction - spark_balance_initial
     print('Difference: ', difference)
-    assert difference == int(float(amount) * 100000000)
+    assert difference == int(float(test_data['amount']) * 100000000)
