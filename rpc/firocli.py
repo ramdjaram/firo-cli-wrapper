@@ -44,6 +44,13 @@ def create_method(call, network, firo_src_dir, datadir=''):
 
 
 class FiroCli:
+    DEFAULT_RPC_CALLS = [
+        'getrawtransaction',
+        'sendrawtransaction',
+        'getblockcount',
+        'generate',
+        'gettransaction',
+    ]
 
     def __init__(self, rpc_calls=None, network='-regtest', firo_src_path=None, datadir=''):
 
@@ -53,15 +60,7 @@ class FiroCli:
         if rpc_calls is None:
             raise AttributeError('List of names for rpc calls aren`t provided')
 
-        self._default_rpc_calls = [
-            'getrawtransaction',
-            'sendrawtransaction',
-            'getblockcount',
-            'generate',
-            'gettransaction',
-        ]
-
-        self._rpc_calls = set(self._default_rpc_calls + [item.strip() for item in rpc_calls.split(',')])
+        self._rpc_calls = set(self.DEFAULT_RPC_CALLS + [item.strip() for item in rpc_calls.split(',')])
         self._network = network
         self._firo_src = firo_src_path
         self._datadir = f'-datadir={datadir}' if datadir else ''
