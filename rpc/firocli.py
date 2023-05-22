@@ -16,9 +16,8 @@ def create_method(call, network, firo_src_dir, datadir):
         command = ['./firo-cli', network, datadir, call]
 
         if kwargs:
-            invalid_key_arguments = [key for key in kwargs.keys() if key not in ['datadir', 'input']]
+            invalid_key_arguments = [key for key in kwargs.keys() if key != 'input']
             assert 'input' in kwargs.keys(), f'Invalid command keys: {invalid_key_arguments}. {invalid_arguments_message}'
-            command.append(str(kwargs['datadir']))  # append the arg value to command and parse the arg to string
             command.append(str(kwargs['input']))  # append the arg value to command and parse the arg to string
 
         print_command_title(call, command, "|")
