@@ -15,11 +15,11 @@ def create_method(call, network, firo_cli_dir):
         command = ['./firo-cli', network, call]
 
         if kwargs:
-            invalid_key_arguments = [key for key in kwargs.keys() if key != 'value']
+            invalid_key_arguments = [key for key in kwargs.keys() if key != 'input']
             assert 'input' in kwargs.keys(), f'Invalid command keys: {invalid_key_arguments}. {invalid_arguments_message}'
             command.append(str(kwargs['input']))  # append the arg value to command and parse the arg to string
 
-        print_command_title(call, command)
+        print_command_title(call, command, "|")
 
         try:
             # execute the command with firo-cli
@@ -63,6 +63,12 @@ class FiroCli:
 
         for call in self._rpc_calls:
             self._methods[call] = create_method(call, self._network, self._firo_cli_directory_path)
+
+        print_command_title('Firo-Cli', ['[firo-cli]', '<network>', '<rpc_call>', '<input>'], '%')
+        print(f'[firo-cli] directory path:\t\t\t{firo_cli_path}')
+        print(f'[network] used for testing:\t\t\t{network}')
+        print(f'[list of integrated rpc calls]:\t\t{self._default_rpc_calls}')
+        print(f'[list of rpc calls under test]:\t\t{rpc_calls}\n\n')
 
     def __getattr__(self, attr):
         if attr in self._methods:

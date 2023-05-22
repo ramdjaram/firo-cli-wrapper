@@ -11,16 +11,16 @@ def is_valid_dict_string(string):
         if isinstance(obj, dict) or isinstance(obj, list):
             return True
     except ValueError:
-        print(f'String({string})\nis not an instance of dict or list, parsing skipped')
+        print(f'String\n(\n\t{string}\n) is not an instance of dict or list, parsing skipped')
     return False
 
 
-def print_command_title(rpc_call, command):
+def print_command_title(rpc_call, command, symbol):
     rpc_call_len = len(rpc_call)
     even = rpc_call_len % 2 == 0
-    hashtag = "||" if even else "|"
-    line = f'\n{(rpc_call_len * 2) * "|"}{hashtag}\n'
-    half_line = f'{int(rpc_call_len / 2) * "|"}'
+    hashtag = 2*symbol if even else symbol
+    line = f'\n{(rpc_call_len * 2) * symbol}{hashtag}\n'
+    half_line = f'{int(rpc_call_len / 2) * symbol}'
     cli_command = ' '.join(command)
-    underline = f'{(len(cli_command)+13) * "_"}\n'
+    underline = f'{(len(cli_command)+4) * "_"}\n'
     print(f"{line}{half_line} {rpc_call.upper()} {half_line}{line}{underline}Cli Command:\n\t{cli_command}\n")

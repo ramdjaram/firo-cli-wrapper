@@ -52,7 +52,7 @@ def test_gettransaction(firo_cli):
 @pytest.mark.spark
 def test_mintspark_and_generate(firo_cli):
 
-    amount = "0.0001"
+    amount = "0.0000123"
 
     spark_balance_initial = firo_cli.getsparkbalance()['availableBalance']
 
