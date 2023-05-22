@@ -84,7 +84,13 @@ class FiroCli:
 
 
 if __name__ == "__main__":
+    import os
+    print(os.getcwd())
+    print(os.path.expanduser('-'))
+    print(os.environ)
+    user_profile = os.environ['HOME']
+    print("USERPROFILE: ", user_profile)
     # ./firod must be started
-    rpc = FiroCli(['getbalance', 'listaccounts', 'mintspark'])
+    rpc = FiroCli(['getbalance', 'listaccounts', 'mintspark'], firo_cli_path='/'.join(os.getcwd(), ))
     spark_balance = rpc.getbalance()
     print(spark_balance.availableBalance)

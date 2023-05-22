@@ -1,9 +1,13 @@
+import os
 from rpc import *
 from pytest import fixture
 from util.helper import load_json_file
 
+
 # CONSTANTS
-FIRO_CLI_DIRECTORY_PATH = '/Users/milanranisavljevic/Workspace/arcadia/firo_spark/src'
+WORKSPACE = 'Workspace/arcadia/firo_spark/src'
+
+FIRO_CLI_DIRECTORY_PATH = '/'.join([os.environ['HOME'], WORKSPACE])
 NETWORK = '-regtest'
 RPC_CALLS = [
     'listunspentsparkmints',
