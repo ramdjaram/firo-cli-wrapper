@@ -1,3 +1,4 @@
 .idea
 firo-cli.iml
-.log
+*.log
+LOGS

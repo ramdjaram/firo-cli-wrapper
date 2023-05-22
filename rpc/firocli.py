@@ -4,7 +4,7 @@ from util.logger import logger
 from util.helper import is_valid_dict_string, print_command_title
 
 
-def create_method(call, network, firo_cli_dir):
+def create_method(call, network, firo_src_dir, datadir):
     def method(*args, **kwargs):
         """A dynamically created method"""
 
@@ -13,18 +13,19 @@ def create_method(call, network, firo_cli_dir):
 
         assert not args, invalid_arguments_message
 
-        command = ['./firo-cli', network, call]
+        command = ['./firo-cli', network, datadir, call]
 
         if kwargs:
-            invalid_key_arguments = [key for key in kwargs.keys() if key != 'input']
+            invalid_key_arguments = [key for key in kwargs.keys() if key not in ['datadir', 'input']]
             assert 'input' in kwargs.keys(), f'Invalid command keys: {invalid_key_arguments}. {invalid_arguments_message}'
+            command.append(str(kwargs['datadir']))  # append the arg value to command and parse the arg to string
             command.append(str(kwargs['input']))  # append the arg value to command and parse the arg to string
 
         print_command_title(call, command, "|")
 
         try:
             # execute the command with firo-cli
-            result = subprocess.run(command, stdout=subprocess.PIPE, cwd=firo_cli_dir, check=True)
+            result = subprocess.run(command, stdout=subprocess.PIPE, cwd=firo_src_dir, check=True)
 
             # decode the result to string
             decoded = result.stdout.decode('utf-8')
@@ -42,9 +43,9 @@ def create_method(call, network, firo_cli_dir):
 
 class FiroCli:
 
-    def __init__(self, rpc_calls=None, network='-regtest', firo_cli_path=None):
+    def __init__(self, rpc_calls=None, network='-regtest', firo_src_path=None, datadir=''):
 
-        if firo_cli_path is None:
+        if firo_src_path is None:
             raise AttributeError('Path to the ./firo-cli must be set')
 
         if rpc_calls is None:
@@ -59,19 +60,25 @@ class FiroCli:
         ]
         self._rpc_calls = self._default_rpc_calls + rpc_calls
         self._network = network
-        self._firo_cli_directory_path = firo_cli_path
+        self._firo_src = firo_src_path
+        self._datadir = f'-datadir={datadir}'
         self._methods = {}
 
         for call in self._rpc_calls:
-            self._methods[call] = create_method(call, self._network, self._firo_cli_directory_path)
+            self._methods[call] = create_method(call, self._network, self._firo_src, self._datadir)
 
         self.info()
 
+    def run_firod(self, datadir=''):
+        command = ['./firod', self._network, datadir]
+        logger.warning(self._firo_src)
+        subprocess.run(command, stdout=subprocess.PIPE, cwd=self._firo_src, check=True)
+
     def info(self):
         print_command_title('Firo-Cli Testing Tool', ['[firo-cli]', '<network>', '<rpc_call>', '<input>'], '%')
-        logger.info(f'[firo-cli] directory path: {self._firo_cli_directory_path}')
+        logger.info(f'[firo/src] directory path: {self._firo_src}')
         logger.info(f'[network] used for testing: {self._network}')
-        logger.info(f'[list of supported rpc calls]: {self._default_rpc_calls}')
+        logger.info(f'[list of supported rpc calls]: {self._rpc_calls}')
 
     def __getattr__(self, attr):
         if attr in self._methods:
@@ -94,6 +101,6 @@ if __name__ == "__main__":
     user_profile = os.environ['HOME']
     logger.info("USERPROFILE: ", user_profile)
     # ./firod must be started
-    rpc = FiroCli(['getbalance', 'listaccounts', 'mintspark'], firo_cli_path=os.getcwd())
+    rpc = FiroCli(['getbalance', 'listaccounts', 'mintspark'], firo_src_path=os.getcwd())
     spark_balance = rpc.getbalance()
     logger.info(spark_balance.availableBalance)

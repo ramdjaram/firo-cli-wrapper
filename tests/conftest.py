@@ -24,7 +24,7 @@ RPC_CALLS = [
 # FIRO-CLI
 @fixture(scope='module')
 def firo_cli():
-    return FiroCli(rpc_calls=RPC_CALLS, firo_cli_path=config['FIRO']['cli_path'])
+    return FiroCli(rpc_calls=RPC_CALLS, firo_src_path=config['FIRO']['cli_path'], datadir=config['FIRO']['blockchain_datadir'])
 
 
 # TEST DATA
