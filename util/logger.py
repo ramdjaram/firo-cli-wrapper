@@ -4,7 +4,7 @@ import sys
 import traceback
 from datetime import datetime
 from pathlib import Path
-from utility import config
+from util.config_loader import config
 
 
 class TestLogger(logging.Logger):

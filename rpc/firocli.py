@@ -1,6 +1,7 @@
 import json
 import subprocess
-from util.utility import is_valid_dict_string, print_command_title
+from util.logger import logger
+from util.helper import is_valid_dict_string, print_command_title
 
 
 def create_method(call, network, firo_cli_dir):
@@ -27,7 +28,7 @@ def create_method(call, network, firo_cli_dir):
 
             # decode the result to string
             decoded = result.stdout.decode('utf-8')
-            print(f'Result:\n{decoded}')
+            logger.debug(f'Result:\n{decoded}')
 
             if is_valid_dict_string(decoded):  # parse if json string
                 return json.loads(decoded)
@@ -64,12 +65,11 @@ class FiroCli:
         for call in self._rpc_calls:
             self._methods[call] = create_method(call, self._network, self._firo_cli_directory_path)
 
-        print('\n\n')
         print_command_title('Firo-Cli Testing Tool', ['[firo-cli]', '<network>', '<rpc_call>', '<input>'], '%')
-        print(f'[firo-cli] directory path:\t\t\t{firo_cli_path}')
-        print(f'[network] used for testing:\t\t\t{network}')
-        print(f'[list of integrated rpc calls]:\t\t{self._default_rpc_calls}')
-        print(f'[list of rpc calls under test]:\t\t{rpc_calls}\n\n')
+        logger.info(f'[firo-cli] directory path: {firo_cli_path}')
+        logger.info(f'[network] used for testing: {network}')
+        logger.info(f'[list of integrated rpc calls]: {self._default_rpc_calls}')
+        logger.info(f'[list of rpc calls under test]: {rpc_calls}')
 
     def __getattr__(self, attr):
         if attr in self._methods:
@@ -85,12 +85,12 @@ class FiroCli:
 
 if __name__ == "__main__":
     import os
-    print(os.getcwd())
-    print(os.path.expanduser('-'))
-    print(os.environ)
+    logger.info(os.getcwd())
+    logger.info(os.path.expanduser('-'))
+    logger.info(os.environ)
     user_profile = os.environ['HOME']
-    print("USERPROFILE: ", user_profile)
+    logger.info("USERPROFILE: ", user_profile)
     # ./firod must be started
-    rpc = FiroCli(['getbalance', 'listaccounts', 'mintspark'], firo_cli_path='/'.join(os.getcwd(), ))
+    rpc = FiroCli(['getbalance', 'listaccounts', 'mintspark'], firo_cli_path=os.getcwd())
     spark_balance = rpc.getbalance()
-    print(spark_balance.availableBalance)
+    logger.info(spark_balance.availableBalance)

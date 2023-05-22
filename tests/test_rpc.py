@@ -1,12 +1,13 @@
 import pytest
 from time import sleep
+from util.logger import logger
 
 
 def test_getsparkbalance(firo_cli):
     spark_balance = firo_cli.getsparkbalance()
-    print(spark_balance['availableBalance'])
-    print(spark_balance['unconfirmedBalance'])
-    print(spark_balance['fullBalance'])
+    logger.info(spark_balance['availableBalance'])
+    logger.info(spark_balance['unconfirmedBalance'])
+    logger.info(spark_balance['fullBalance'])
 
 
 def test_getsparkbalance_invalid_key(firo_cli):
@@ -37,7 +38,7 @@ def test_spendspark_no_arguments(firo_cli):
 @pytest.mark.spark
 def test_list_spark_mints(firo_cli):
     spark_mints_list = firo_cli.listsparkmints()
-    print(spark_mints_list[1]['amount'])
+    logger.info(spark_mints_list[1]['amount'])
 
 
 def test_get_block_count(firo_cli):
@@ -74,5 +75,5 @@ def test_mintspark_and_generate(firo_cli, input_mintspark, test_data):
 
     spark_balance_after_transaction = firo_cli.getsparkbalance()['availableBalance']
     difference = spark_balance_after_transaction - spark_balance_initial
-    print('Difference: ', difference)
+    logger.info('Difference: ', difference)
     assert difference == int(float(test_data['amount']) * 100000000)

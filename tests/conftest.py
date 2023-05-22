@@ -1,13 +1,8 @@
-import os
 from rpc import *
 from pytest import fixture
-from util.utility import load_json_file, stringify
+from util import load_json_file, stringify, config
 
-# CONSTANTS
-WORKSPACE = 'Workspace/arcadia/firo_spark/src'
 
-FIRO_CLI_DIRECTORY_PATH = '/'.join([os.environ['HOME'], WORKSPACE])
-NETWORK = '-regtest'
 RPC_CALLS = [
     'listunspentsparkmints',
     'listsparkmints',
@@ -29,7 +24,7 @@ RPC_CALLS = [
 # FIRO-CLI
 @fixture(scope='module')
 def firo_cli():
-    return FiroCli(rpc_calls=RPC_CALLS, firo_cli_path=FIRO_CLI_DIRECTORY_PATH)
+    return FiroCli(rpc_calls=RPC_CALLS, firo_cli_path=config['FIRO']['cli_path'])
 
 
 # TEST DATA
