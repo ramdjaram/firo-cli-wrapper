@@ -12,6 +12,7 @@ def firo_cli():
         datadir=config.get('FIRO', 'blockchain_datadir'))
     firod = cli.run_firod()
     yield cli
+    logger.info('Terminating [firod] process...')
     firod.terminate()
 
 

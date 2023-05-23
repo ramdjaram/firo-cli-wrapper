@@ -73,7 +73,6 @@ class FiroCli:
 
         self.info()
 
-    # todo see how to run this in same process and generate blocks before run
     def run_firod(self):
         command = ['./firod', self._network]
         if self._datadir:
@@ -81,11 +80,12 @@ class FiroCli:
         try:
             # Wait for the first process to start running
             firod = subprocess.Popen(command, stdout=subprocess.PIPE, cwd=self._firo_src)
-            # while firod.poll() is None:
-            #     sleep(1)
-            sleep(5)
-            logger.info(f'[firod] is running...')
-            return firod
+            return_code = firod.wait()
+            if return_code is None:
+                raise Exception('[firod] is not running for some reason, try again!')
+            else:
+                logger.info(f'[firod] is running...')
+                return firod
         except subprocess.CalledProcessError as e:
             error_message = f"Command failed with return code {e.returncode}: {e.output.decode()}"
             logger.error(error_message)
