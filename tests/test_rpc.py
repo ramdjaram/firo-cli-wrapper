@@ -1,6 +1,9 @@
 import pytest
-from time import sleep
 from util.logger import logger
+
+
+def test_stop_firo_core_process(firo_cli):
+    firo_cli.stop_firo_core()
 
 
 def test_getsparkbalance(firo_cli):
