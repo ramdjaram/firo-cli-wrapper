@@ -17,10 +17,9 @@
 7. ./src/qt/firo-qt -regtest <-- open QT in regtest
 
 
-
 #### EXECUTE IN TERMINAL TO RUN FIROD
-1. `./firod -regtest`
-2. `./firo-cli -regtest getsparkbalance`
+1. `firod -regtest -datadir=/Users/milanranisavljevic/Desktop/regtest`
+2. `firo-cli -regtest -datadir=/Users/milanranisavljevic/Desktop/regtest getsparkbalance`
 
 #### Start firo-qt with new blockchain
 `./firo-qt -regtest -datadir=/Users/milanranisavljevic/Desktop/regtest`
