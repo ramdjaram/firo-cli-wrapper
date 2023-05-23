@@ -2,10 +2,6 @@ import pytest
 from util.logger import logger
 
 
-def test_stop_firo_core_process(firo_cli):
-    firo_cli.stop_firo_core()
-
-
 def test_getsparkbalance(firo_cli):
     spark_balance = firo_cli.getsparkbalance()
     logger.info(spark_balance['availableBalance'])
