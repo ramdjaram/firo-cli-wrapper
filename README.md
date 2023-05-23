@@ -2,7 +2,7 @@
 
 >### RUNNING TESTS
 > 
->`pytest -m 'noargs' --html=report.html`
+>`pytest -m 'spark' --html=artifacts/report.html`
 
 
 ### BUILD
