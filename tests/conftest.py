@@ -10,10 +10,12 @@ def firo_cli():
         rpc_calls=config.get('FIRO', 'spark_calls'),
         firo_src_path=config.get('FIRO', 'cli_path'),
         datadir=config.get('FIRO', 'blockchain_datadir'))
-    firod = cli.run_firod()
+    firo_core = cli.run_firod(wait=5)
     yield cli
-    logger.info('Terminating Firo Core process...')
-    firod.terminate()
+    logger.warning('Terminating Firo Core process...')
+    firo_core.terminate()
+    firo_core.wait()
+    logger.info('Firo Core process terminated successfully!')
 
 
 # TEST DATA

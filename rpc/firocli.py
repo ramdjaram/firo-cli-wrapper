@@ -1,4 +1,5 @@
 import json
+import psutil
 import subprocess
 from time import sleep
 from util.logger import logger
@@ -73,19 +74,42 @@ class FiroCli:
 
         self.info()
 
-    def run_firod(self):
+    def is_firo_core_running(self):
+        for proc in psutil.process_iter(['name']):
+            if proc.info['name'] == 'firod':  # Adjust the process name as needed
+                return proc
+        return False
+
+    def run_firod(self, wait):
         command = ['./firod', self._network]
         if self._datadir:
             command.append(self._datadir)
         try:
-            # Wait for the first process to start running
-            firod = subprocess.Popen(command, stdout=subprocess.PIPE, cwd=self._firo_src)
-            return_code = firod.wait()
-            if return_code is None:
-                raise Exception('Firo Core is not running for some reason, try again!')
-            else:
-                logger.info(f'Firo Core is running...')
+            # Usage
+            firod = self.is_firo_core_running()
+            if firod:
+                logger.warning('Firo Core is already running.')
                 return firod
+            else:
+                logger.warning('Firo Core is not running. Starting Firo Core...')
+                counter = 0
+
+                # Wait for the firod process to start running
+                firod = subprocess.Popen(command, stdout=subprocess.PIPE, cwd=self._firo_src)
+
+                firod_finished = None
+                while firod_finished is None and counter is not wait:
+                    logger.info(f'Polling Firo Core - attempt: {counter+1}')
+                    firod_finished = firod.poll()
+                    if firod_finished is not None:
+                        error = 'Firo Core stopped for unknown reason!'
+                        logger.error(error)
+                        raise Exception(error)
+                    sleep(1)  # Adjust the sleep duration as needed
+                    counter += 1
+                logger.info('Firo Core is running.')
+                return firod
+
         except subprocess.CalledProcessError as e:
             error_message = f"Command failed with return code {e.returncode}: {e.output.decode()}"
             logger.error(error_message)
