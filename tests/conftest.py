@@ -11,8 +11,11 @@ def firo_cli():
         firo_src_path=config.get('FIRO', 'cli_path'),
         datadir=config.get('FIRO', 'blockchain_datadir'))
     cli.run_firo_core(wait=5)
+    block_count = int(cli.getblockcount())
+    if block_count < 1000:
+        cli.generate(1000-block_count)
     yield cli
-    cli.stop_firo_core()
+    # cli.stop_firo_core()
 
 
 # TEST DATA
