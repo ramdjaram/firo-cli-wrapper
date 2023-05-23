@@ -8,7 +8,7 @@ from util import load_json_file, stringify, config
 def cli():
     firo_cli = FiroCli(
         rpc_calls=config.get('FIRO', 'spark_calls'),
-        firo_src_path=config.get('FIRO', 'cli_path'),
+        firo_src_path=config.get('FIRO', 'firo_src'),
         datadir=config.get('FIRO', 'blockchain_datadir'))
     return firo_cli
 

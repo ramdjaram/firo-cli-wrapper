@@ -1,6 +1,13 @@
+import os
 import json
 import psutil
 from util.logger import logger
+
+
+def dir_exists(directory):
+    if os.path.exists(directory) and os.path.isdir(directory):
+        return True
+    return False
 
 
 def load_json_file(file_path):

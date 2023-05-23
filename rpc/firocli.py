@@ -78,7 +78,7 @@ class FiroCli:
 
         self.info()
 
-    def run_firo_core(self, wait=45):
+    def run_firo_core(self, wait=10):
         command = [f'./{FIROD_PROCESS_NAME}', self._network]
         if self._datadir:
             command.append(self._datadir)
@@ -89,6 +89,7 @@ class FiroCli:
                 return firod
             else:
                 logger.warning('Firo Core is not running. Starting Firo Core...')
+                print_command_title(FIROD_PROCESS_NAME, command, '%')
                 counter = 0
 
                 # start Firo Core as a separate process
@@ -144,16 +145,3 @@ class FiroCli:
         raw_tx = self.getrawtransaction(input=txid.strip())
         self.sendrawtransaction(input=raw_tx.strip())
 
-
-if __name__ == "__main__":
-    import os
-
-    logger.info(os.getcwd())
-    logger.info(os.path.expanduser('-'))
-    logger.info(os.environ)
-    user_profile = os.environ['HOME']
-    logger.info("USERPROFILE: ", user_profile)
-    # ./firod must be started
-    rpc = FiroCli(['getbalance', 'listaccounts', 'mintspark'], firo_src_path=os.getcwd())
-    spark_balance = rpc.getbalance()
-    logger.info(spark_balance.availableBalance)
