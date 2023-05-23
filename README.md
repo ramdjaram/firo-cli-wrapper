@@ -1,6 +1,8 @@
 ## FIRO-CLI TEST TOOL
 
 >### RUNNING TESTS
+
+>`pytest -m 'wip' --html=artifacts/report.html`
 > 
 >`pytest -m 'spark' --html=artifacts/report.html`
 > 
