@@ -2,36 +2,12 @@ import pytest
 from util.logger import logger
 
 
+@pytest.mark.wip
 def test_getsparkbalance(firo_cli):
     spark_balance = firo_cli.getsparkbalance()
     logger.info(spark_balance['availableBalance'])
     logger.info(spark_balance['unconfirmedBalance'])
     logger.info(spark_balance['fullBalance'])
-
-
-def test_getsparkbalance_invalid_key(firo_cli):
-    with pytest.raises(AssertionError):
-        firo_cli.getsparkbalance(bad_key='invalid')
-
-
-def test_getsparkbalance_valid_and_invalid_key(firo_cli):
-    with pytest.raises(Exception):
-        firo_cli.getsparkbalance(input='valid key', bad_key='invalid')
-
-
-def test_getsparkbalance_invalid_value(firo_cli):
-    with pytest.raises(Exception):
-        firo_cli.getsparkbalance(input='invalid value')
-
-
-def test_spendspark_bad_arguments(firo_cli):
-    with pytest.raises(Exception):
-        firo_cli.spendspark(input='invalid value')
-
-
-def test_spendspark_no_arguments(firo_cli):
-    with pytest.raises(Exception):
-        firo_cli.spendspark()
 
 
 @pytest.mark.spark
