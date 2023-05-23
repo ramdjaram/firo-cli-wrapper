@@ -82,8 +82,8 @@ try:
         print(f'Loaded STDOUT state from config [{STDOUT}]')
         LOG_NAME = config.get('LOGGER', 'log_name')
         print(f'Loaded LOG_NAME from config [{LOG_NAME}]')
-        LOGS_DIR = Path(config.get('LOGGER', 'logs_absolute_path'))
-        print(f'Loaded LOGS_ABSOLUTE_PATH from config [{LOGS_DIR}]')
+        LOGS_DIR = Path(config.get('LOGGER', 'logs_folder_name'))
+        print(f'Loaded LOGS FOLDER NAME from config [{LOGS_DIR}]')
 except KeyError as e:
     print(f'{e} is not valid key or not set in [.ini]. Default value will be used.')
 except Exception as e:

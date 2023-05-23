@@ -25,7 +25,6 @@ def load_config(directory=Path(os.getcwd()).parent):
 # LOAD CONFIG
 config = load_config()
 
-
 if __name__ == '__main__':
-    print('Log level: ', config.get('LOGGER','level'))
-    print('Logs location: ', config.get('LOGGER','logs_absolute_path'))
+    print('Log level: ', config.get('LOGGER', 'level'))
+    print('Logs location: ', config.get('LOGGER', 'logs_folder_name'))
