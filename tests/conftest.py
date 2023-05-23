@@ -19,11 +19,11 @@ def firo_cli(cli):
     cli.run_firo_core()
 
     # generate blocks
-    BLOCKS = 3
+    BLOCKS = 100
     block_count = int(cli.getblockcount())
     if block_count < BLOCKS:
         delta = BLOCKS-block_count
-        logger.info(f'Generating {delta} additional blocks.')
+        logger.warning(f'Generating {delta} additional blocks.')
         cli.generate(input=delta)
 
     yield cli
