@@ -16,7 +16,7 @@ def cli():
 # firo-cli started Firo Core
 @fixture(scope='module')
 def firo_cli(cli):
-    cli.run_firo_core(wait=5)
+    cli.run_firo_core()
 
     block_count = int(cli.getblockcount())
     # if block_count < 1000:
