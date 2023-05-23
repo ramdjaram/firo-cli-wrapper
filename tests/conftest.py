@@ -1,5 +1,3 @@
-import pytest
-import pytest_html
 from pytest import fixture
 from rpc import *
 from util import load_json_file, stringify, config
@@ -17,7 +15,7 @@ def firo_cli():
 # TEST DATA
 @fixture(scope='module')
 def test_data():
-    return load_json_file(r'/Users/milanranisavljevic/Workspace/firo-cli/data/data.json')
+    return load_json_file(config.get('TESTDATA', 'inputs'))
 
 
 # INPUTS
