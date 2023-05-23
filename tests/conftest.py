@@ -10,12 +10,9 @@ def firo_cli():
         rpc_calls=config.get('FIRO', 'spark_calls'),
         firo_src_path=config.get('FIRO', 'cli_path'),
         datadir=config.get('FIRO', 'blockchain_datadir'))
-    firo_core = cli.run_firod(wait=5)
+    cli.run_firo_core(wait=5)
     yield cli
-    logger.warning('Terminating Firo Core process...')
-    firo_core.terminate()
-    firo_core.wait()
-    logger.info('Firo Core process terminated successfully!')
+    cli.stop_firo_core()
 
 
 # TEST DATA
@@ -28,7 +25,7 @@ def test_data():
 @fixture(scope='module')
 def input_mintspark(test_data):
     return stringify({
-        test_data['p_address']: {
+        "sr1rjrgek8hka2x2nhuhlw2ptxatryv0mfmp6qy9yehhnlrnzhdpjewg5tdvtwq7upycx78tf9xp09jchgwzzrrmne5k626qrp30kkrt5aluzns2l3cmh7dajlymtrzxf4wujl8tyc9yuqrz": {
             'amount': test_data['amount'], 'memo': 'test_memo'
         }
     })

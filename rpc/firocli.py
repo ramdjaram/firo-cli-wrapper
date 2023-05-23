@@ -80,7 +80,15 @@ class FiroCli:
                 return proc
         return False
 
-    def run_firod(self, wait):
+    def stop_firo_core(self):
+        firod = self.is_firo_core_running()
+        if firod:
+            logger.warning('Terminating Firo Core process...')
+            firod.terminate()
+            firod.wait()
+            logger.info('Firo Core process terminated successfully!')
+
+    def run_firo_core(self, wait):
         command = ['./firod', self._network]
         if self._datadir:
             command.append(self._datadir)
@@ -99,7 +107,7 @@ class FiroCli:
 
                 firod_finished = None
                 while firod_finished is None and counter is not wait:
-                    logger.info(f'Polling Firo Core - attempt: {counter+1}')
+                    logger.info(f'Polling Firo Core - attempt: {counter + 1}')
                     firod_finished = firod.poll()
                     if firod_finished is not None:
                         error = 'Firo Core stopped for unknown reason!'

@@ -25,6 +25,7 @@ def test_getsparkdefaultaddress(firo_cli):
     firo_cli.getsparkdefaultaddress()
 
 
+@pytest.mark.wip
 @pytest.mark.noargs
 @pytest.mark.spark
 def test_getallsparkaddresses(firo_cli):
