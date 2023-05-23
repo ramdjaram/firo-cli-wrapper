@@ -80,20 +80,11 @@ class FiroCli:
                 return proc
         return False
 
-    def stop_firo_core(self):
-        firod = self.is_firo_core_running()
-        if firod:
-            logger.warning('Terminating Firo Core process...')
-            firod.terminate()
-            firod.wait()
-            logger.info('Firo Core process terminated successfully!')
-
     def run_firo_core(self, wait):
         command = ['./firod', self._network]
         if self._datadir:
             command.append(self._datadir)
         try:
-            # Usage
             firod = self.is_firo_core_running()
             if firod:
                 logger.warning('Firo Core is already running.')
@@ -102,9 +93,10 @@ class FiroCli:
                 logger.warning('Firo Core is not running. Starting Firo Core...')
                 counter = 0
 
-                # Wait for the firod process to start running
+                # start Firo Core as a separate process
                 firod = subprocess.Popen(command, stdout=subprocess.PIPE, cwd=self._firo_src)
 
+                # Wait for the Firo Core process to start running
                 firod_finished = None
                 while firod_finished is None and counter is not wait:
                     logger.info(f'Polling Firo Core - attempt: {counter + 1}')
@@ -117,15 +109,25 @@ class FiroCli:
                     counter += 1
                 logger.info('Firo Core is running.')
                 return firod
-
         except subprocess.CalledProcessError as e:
             error_message = f"Command failed with return code {e.returncode}: {e.output.decode()}"
             logger.error(error_message)
             raise Exception(error_message)
 
+    def stop_firo_core(self):
+        firod = self.is_firo_core_running()
+        if firod:
+            logger.warning('Terminating Firo Core process...')
+            firod.terminate()
+            firod.wait()
+            logger.info('Firo Core process terminated successfully!')
+
     def info(self):
-        print_command_title('FIRO-CLI TESTING TOOL', ['[firo-cli]', '<network>', '<datadir>', '<rpc_call>', '<input>'],
-                            '%')
+        print_command_title(
+            'FIRO-CLI TESTING TOOL',
+            ['[firo-cli]', '<network>', '<datadir>', '<rpc_call>', '<input>'],
+            '%'
+        )
         logger.info(f'Firo src directory path: {self._firo_src}')
         logger.info(f'Network used for testing: {self._network}')
         logger.info(f'List of supported rpc calls: {self._rpc_calls}\n')
