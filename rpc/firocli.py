@@ -78,7 +78,7 @@ class FiroCli:
 
         self.info()
 
-    def run_firo_core(self, wait=10):
+    def run_firo_core(self, wait=15):
         command = [f'./{FIROD_PROCESS_NAME}', self._network]
         if self._datadir:
             command.append(self._datadir)
@@ -117,7 +117,11 @@ class FiroCli:
         logger.warning('Stopping Firo Core...')
         firod = is_process_running(FIROD_PROCESS_NAME)
         if firod:
-            logger.warning('Terminating Firo Core process...')
+            pid = str(firod.pid)
+            logger.warning(f'Terminating Firo Core process...')
+            logger.debug(f'Firod process PID: {pid}')
+            # subprocess.run(['kill', '-9', pid], stdout=subprocess.PIPE)
+            # sleep(5)
             firod.terminate()
             firod.wait()
             logger.info('Firo Core process terminated successfully!')
