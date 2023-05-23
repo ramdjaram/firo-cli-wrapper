@@ -1,5 +1,6 @@
 import json
 import subprocess
+from time import sleep
 from util.logger import logger
 from util.helper import is_valid_dict_string, print_command_title
 
@@ -38,6 +39,7 @@ def create_method(call, network, firo_src_dir, datadir=''):
             return decoded.strip()
         except subprocess.CalledProcessError as e:
             error_message = f"Command failed with return code {e.returncode}: {e.output.decode()}"
+            logger.error(error_message)
             raise Exception(error_message)
 
     return method
@@ -72,13 +74,26 @@ class FiroCli:
         self.info()
 
     # todo see how to run this in same process and generate blocks before run
-    def run_firod(self, datadir=''):
-        command = ['./firod', self._network, datadir]
-        logger.warning(self._firo_src)
-        subprocess.run(command, stdout=subprocess.PIPE, cwd=self._firo_src, check=True)
+    def run_firod(self):
+        command = ['./firod', self._network]
+        if self._datadir:
+            command.append(self._datadir)
+        try:
+            # Wait for the first process to start running
+            firod = subprocess.Popen(command, stdout=subprocess.PIPE, cwd=self._firo_src)
+            # while firod.poll() is None:
+            #     sleep(1)
+            sleep(5)
+            logger.info(f'[firod] is running...')
+            return firod
+        except subprocess.CalledProcessError as e:
+            error_message = f"Command failed with return code {e.returncode}: {e.output.decode()}"
+            logger.error(error_message)
+            raise Exception(error_message)
 
     def info(self):
-        print_command_title('FIRO-CLI TESTING TOOL', ['[firo-cli]', '<network>', '<datadir>', '<rpc_call>', '<input>'], '%')
+        print_command_title('FIRO-CLI TESTING TOOL', ['[firo-cli]', '<network>', '<datadir>', '<rpc_call>', '<input>'],
+                            '%')
         logger.info(f'Firo src directory path: {self._firo_src}')
         logger.info(f'Network used for testing: {self._network}')
         logger.info(f'List of supported rpc calls: {self._rpc_calls}\n')

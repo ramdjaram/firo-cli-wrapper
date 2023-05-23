@@ -6,10 +6,13 @@ from util import load_json_file, stringify, config
 # FIRO-CLI
 @fixture(scope='module')
 def firo_cli():
-    return FiroCli(
+    cli = FiroCli(
         rpc_calls=config.get('FIRO', 'spark_calls'),
         firo_src_path=config.get('FIRO', 'cli_path'),
         datadir=config.get('FIRO', 'blockchain_datadir'))
+    firod = cli.run_firod()
+    yield cli
+    firod.terminate()
 
 
 # TEST DATA
