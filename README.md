@@ -3,6 +3,8 @@
 >### RUNNING TESTS
 > 
 >`pytest -m 'spark' --html=artifacts/report.html`
+> 
+>`pytest -m 'unit' --html=artifacts/report.html`
 
 
 ### BUILD
