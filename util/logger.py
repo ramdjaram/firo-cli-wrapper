@@ -76,19 +76,20 @@ LOGS_DIR = Path(os.getcwd())
 
 try:
     if config is not None:
-        LEVEL = config['LOGGER']['level']
+        LEVEL = config.get('LOGGER', 'level')
         print(f'Loaded log LEVEL from config [{LEVEL}]')
-        STDOUT = config['LOGGER']['stdout']
+        STDOUT = config.get('LOGGER', 'stdout')
         print(f'Loaded STDOUT state from config [{STDOUT}]')
-        LOG_NAME = config['LOGGER']['log_name']
+        LOG_NAME = config.get('LOGGER', 'log_name')
         print(f'Loaded LOG_NAME from config [{LOG_NAME}]')
-        LOGS_DIR = Path(config['LOGGER']['logs_absolute_path'])
+        LOGS_DIR = Path(config.get('LOGGER', 'logs_absolute_path'))
         print(f'Loaded LOGS_ABSOLUTE_PATH from config [{LOGS_DIR}]')
 except KeyError as e:
     print(f'{e} is not valid key or not set in [.ini]. Default value will be used.')
 except Exception as e:
     print('\n'.join([str(e), traceback.format_exc()]))
 
+# INITIALIZE LOGGER
 logger = TestLogger(location_path=LOGS_DIR, log_name=LOG_NAME, level=LEVEL, stdout=STDOUT)
 
 if __name__ == '__main__':
