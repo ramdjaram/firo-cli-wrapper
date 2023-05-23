@@ -25,6 +25,10 @@
 1. `firod -regtest -datadir=/Users/milanranisavljevic/Desktop/regtest`
 2. `firo-cli -regtest -datadir=/Users/milanranisavljevic/Desktop/regtest getsparkbalance`
 
+`pgrep firod` list processes named "firod"
+`ps -p $(pgrep firod)` display more information about the processes
+`kill -9 <pid>` kill process (-9 = force) 
+
 #### Start firo-qt with new blockchain
 `./firo-qt -regtest -datadir=/Users/milanranisavljevic/Desktop/regtest`
 

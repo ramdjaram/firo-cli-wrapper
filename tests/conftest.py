@@ -19,16 +19,16 @@ def firo_cli(cli):
     cli.run_firo_core()
 
     # generate blocks
-    BLOCKS = 100
+    BLOCKS = 5
     block_count = int(cli.getblockcount())
     if block_count < BLOCKS:
         delta = BLOCKS-block_count
-        logger.warning(f'Generating {delta} additional blocks.')
+        logger.warning(f'Generating {delta} additional blocks...')
         cli.generate(input=delta)
 
     yield cli
 
-    # cli.stop_firo_core()
+    # cli.stop_firo_core()  # comment in case you not want to stop Firo Core after test suite
 
 
 # TEST DATA
