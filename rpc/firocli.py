@@ -4,10 +4,14 @@ from time import sleep
 from util.logger import logger
 from util.helper import is_valid_dict_string, print_command_title, is_process_running
 
+FIROD_PROCESS_NAME = 'firod'
+
 
 def create_method(call, network, firo_src_dir, datadir=''):
     def method(*args, **kwargs):
         """A dynamically created method"""
+
+        assert is_process_running(FIROD_PROCESS_NAME), 'Firo Core should be running. Start Firo Core(firod) process `firo_cli.run_firo_core()`'
 
         invalid_arguments_message = f'Firo-cli command arguments must be key/value pair with "input" as a key. ' \
                                     f'For example: firo_cli.{call}(input=<command_argument_value>)'
@@ -46,7 +50,7 @@ def create_method(call, network, firo_src_dir, datadir=''):
 
 
 class FiroCli:
-    FIROD_PROCESS_NAME = 'firod'
+
     DEFAULT_RPC_CALLS = [
         'getrawtransaction',
         'sendrawtransaction',
@@ -75,11 +79,11 @@ class FiroCli:
         self.info()
 
     def run_firo_core(self, wait):
-        command = [f'./{self.FIROD_PROCESS_NAME}', self._network]
+        command = [f'./{FIROD_PROCESS_NAME}', self._network]
         if self._datadir:
             command.append(self._datadir)
         try:
-            firod = is_process_running(self.FIROD_PROCESS_NAME)
+            firod = is_process_running(FIROD_PROCESS_NAME)
             if firod:
                 logger.warning('Firo Core is already running.')
                 return firod
@@ -109,12 +113,15 @@ class FiroCli:
             raise Exception(error_message)
 
     def stop_firo_core(self):
-        firod = is_process_running(self.FIROD_PROCESS_NAME)
+        logger.warning('Stopping Firo Core...')
+        firod = is_process_running(FIROD_PROCESS_NAME)
         if firod:
             logger.warning('Terminating Firo Core process...')
             firod.terminate()
             firod.wait()
             logger.info('Firo Core process terminated successfully!')
+            return
+        logger.warning('Firo Core is not running. Noting to stop!')
 
     def info(self):
         print_command_title(

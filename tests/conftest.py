@@ -6,16 +6,21 @@ from util import load_json_file, stringify, config
 # FIRO-CLI
 @fixture(scope='module')
 def firo_cli():
-    cli = FiroCli(
+
+    firo_cli = FiroCli(
         rpc_calls=config.get('FIRO', 'spark_calls'),
         firo_src_path=config.get('FIRO', 'cli_path'),
         datadir=config.get('FIRO', 'blockchain_datadir'))
-    cli.run_firo_core(wait=5)
-    block_count = int(cli.getblockcount())
-    if block_count < 1000:
-        cli.generate(1000-block_count)
-    yield cli
-    # cli.stop_firo_core()
+
+    firo_cli.run_firo_core(wait=5)
+
+    # block_count = int(firo_cli.getblockcount())
+    # if block_count < 1000:
+    #     firo_cli.generate(1000-block_count)
+
+    yield firo_cli
+
+    # firo_cli.stop_firo_core()
 
 
 # TEST DATA
