@@ -16,10 +16,10 @@ def cli():
 # firo-cli started Firo Core
 @fixture(scope='module')
 def firo_cli(cli):
-    cli.run_firo_core(5)
+    cli.run_firo_core()
 
     # generate blocks
-    BLOCKS = 25
+    BLOCKS = 27
     block_count = int(cli.getblockcount())
     if block_count < BLOCKS:
         delta = BLOCKS-block_count
@@ -28,7 +28,7 @@ def firo_cli(cli):
 
     yield cli
 
-    # cli.stop_firo_core()  # comment in case you not want to stop Firo Core after test suite
+    cli.stop_firo_core()  # comment in case you not want to stop Firo Core after test suite
 
 
 # TEST DATA
@@ -41,7 +41,7 @@ def test_data():
 @fixture(scope='module')
 def input_mintspark(test_data):
     return stringify({
-        "sr1rjrgek8hka2x2nhuhlw2ptxatryv0mfmp6qy9yehhnlrnzhdpjewg5tdvtwq7upycx78tf9xp09jchgwzzrrmne5k626qrp30kkrt5aluzns2l3cmh7dajlymtrzxf4wujl8tyc9yuqrz": {
+        "sr1qd7k458jfhtsxvguzn09gl5gvkwfalendc0rsdl9fkt6hv8akzdu3h6fhm6w2tm79s30jm0n5lamel4y4jaeq7drzmrr4pme3cawmejqy2dz8wkuu5z5hvg5dnxg9cqu9jgr0nq2s3czv": {
             'amount': test_data['amount'], 'memo': 'test_memo'
         }
     })

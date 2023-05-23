@@ -2,7 +2,7 @@ import json
 import subprocess
 from time import sleep
 from util.logger import logger
-from util.helper import is_valid_dict_string, print_command_title, is_process_running
+from util.helper import is_valid_dict_string, print_command_title, is_process_running, dir_exists
 
 FIROD_PROCESS_NAME = 'firod'
 
@@ -11,7 +11,8 @@ def create_method(call, network, firo_src_dir, datadir=''):
     def method(*args, **kwargs):
         """A dynamically created method"""
 
-        assert is_process_running(FIROD_PROCESS_NAME), 'Firo Core should be running. Start Firo Core(firod) process `firo_cli.run_firo_core()`'
+        assert is_process_running(
+            FIROD_PROCESS_NAME), 'Firo Core should be running. Start Firo Core(firod) process `firo_cli.run_firo_core()`'
 
         invalid_arguments_message = f'Firo-cli command arguments must be key/value pair with "input" as a key. ' \
                                     f'For example: firo_cli.{call}(input=<command_argument_value>)'
@@ -50,7 +51,6 @@ def create_method(call, network, firo_src_dir, datadir=''):
 
 
 class FiroCli:
-
     DEFAULT_RPC_CALLS = [
         'getrawtransaction',
         'sendrawtransaction',
@@ -78,7 +78,13 @@ class FiroCli:
 
         self.info()
 
-    def run_firo_core(self, wait=15):
+    def run_firo_core(self, wait=5):
+
+        blockchain_check = True
+
+        if not dir_exists(f'{self._datadir.split("=")[1]}/regtest'):
+            blockchain_check = False
+
         command = [f'./{FIROD_PROCESS_NAME}', self._network]
         if self._datadir:
             command.append(self._datadir)
@@ -97,7 +103,7 @@ class FiroCli:
 
                 # Wait for the Firo Core process to start running
                 firod_finished = None
-                while firod_finished is None and counter is not wait:
+                while firod_finished is None and counter is not (wait if blockchain_check else (wait + 15)):
                     logger.info(f'Polling Firo Core - attempt: {counter + 1}')
                     firod_finished = firod.poll()
                     if firod_finished is not None:
@@ -107,6 +113,9 @@ class FiroCli:
                     sleep(1)  # Adjust the sleep duration as needed
                     counter += 1
                 logger.info('Firo Core is running.')
+                if not blockchain_check:
+                    raise Exception(
+                        'Provided data dir for local blockchain doesn`r exist. Just created. Restart your tests!')
                 return firod
         except subprocess.CalledProcessError as e:
             error_message = f"Command failed with return code {e.returncode}: {e.output.decode()}"
@@ -148,4 +157,3 @@ class FiroCli:
     def rebroadcast_transaction(self, txid):
         raw_tx = self.getrawtransaction(input=txid.strip())
         self.sendrawtransaction(input=raw_tx.strip())
-
