@@ -100,7 +100,7 @@ class FiroCli:
                     logger.info(f'Polling Firo Core - attempt: {counter + 1}')
                     firod_finished = firod.poll()
                     if firod_finished is not None:
-                        error = 'Firo Core stopped for unknown reason!'
+                        error = 'Firo Core stopped due to error!'
                         logger.error(error)
                         raise Exception(error)
                     sleep(1)  # Adjust the sleep duration as needed
