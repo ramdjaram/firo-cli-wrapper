@@ -1,4 +1,6 @@
 .idea
+LOGS
 firo-cli.iml
 *.log
-LOGS
+.html
+.css

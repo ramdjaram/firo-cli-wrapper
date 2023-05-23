@@ -23,7 +23,7 @@ def create_method(call, network, firo_src_dir, datadir=''):
             assert 'input' in kwargs.keys(), f'Invalid command keys: {invalid_key_arguments}. {invalid_arguments_message}'
             command.append(str(kwargs['input']))  # append the arg value to command and parse the arg to string
 
-        print_command_title(call, command, "|")
+        print_command_title(call, command, "@")
 
         try:
             # execute the command with firo-cli
@@ -71,16 +71,17 @@ class FiroCli:
 
         self.info()
 
+    # todo see how to run this in same process and generate blocks before run
     def run_firod(self, datadir=''):
         command = ['./firod', self._network, datadir]
         logger.warning(self._firo_src)
         subprocess.run(command, stdout=subprocess.PIPE, cwd=self._firo_src, check=True)
 
     def info(self):
-        print_command_title('Firo-Cli Testing Tool', ['[firo-cli]', '<network>', '<rpc_call>', '<input>'], '%')
-        logger.info(f'[firo/src] directory path: {self._firo_src}')
-        logger.info(f'[network] used for testing: {self._network}')
-        logger.info(f'[list of supported rpc calls]: {self._rpc_calls}')
+        print_command_title('FIRO-CLI TESTING TOOL', ['[firo-cli]', '<network>', '<datadir>', '<rpc_call>', '<input>'], '%')
+        logger.info(f'Firo src directory path: {self._firo_src}')
+        logger.info(f'Network used for testing: {self._network}')
+        logger.info(f'List of supported rpc calls: {self._rpc_calls}\n')
 
     def __getattr__(self, attr):
         if attr in self._methods:
