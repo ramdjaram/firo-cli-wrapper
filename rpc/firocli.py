@@ -78,7 +78,7 @@ class FiroCli:
 
         self.info()
 
-    def run_firo_core(self, wait=20):
+    def run_firo_core(self, wait=45):
         command = [f'./{FIROD_PROCESS_NAME}', self._network]
         if self._datadir:
             command.append(self._datadir)
