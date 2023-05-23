@@ -82,9 +82,9 @@ class FiroCli:
             firod = subprocess.Popen(command, stdout=subprocess.PIPE, cwd=self._firo_src)
             return_code = firod.wait()
             if return_code is None:
-                raise Exception('[firod] is not running for some reason, try again!')
+                raise Exception('Firo Core is not running for some reason, try again!')
             else:
-                logger.info(f'[firod] is running...')
+                logger.info(f'Firo Core is running...')
                 return firod
         except subprocess.CalledProcessError as e:
             error_message = f"Command failed with return code {e.returncode}: {e.output.decode()}"
