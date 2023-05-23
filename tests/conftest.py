@@ -3,24 +3,27 @@ from rpc import *
 from util import load_json_file, stringify, config
 
 
-# FIRO-CLI
+# Firo Core not started
 @fixture(scope='module')
-def firo_cli():
-
+def cli():
     firo_cli = FiroCli(
         rpc_calls=config.get('FIRO', 'spark_calls'),
         firo_src_path=config.get('FIRO', 'cli_path'),
         datadir=config.get('FIRO', 'blockchain_datadir'))
+    return firo_cli
 
-    firo_cli.run_firo_core(wait=5)
 
-    # block_count = int(firo_cli.getblockcount())
+# firo-cli started Firo Core
+@fixture(scope='module')
+def firo_cli(cli):
+    cli.run_firo_core(wait=5)
+
+    block_count = int(cli.getblockcount())
     # if block_count < 1000:
     #     firo_cli.generate(1000-block_count)
 
-    yield firo_cli
-
-    # firo_cli.stop_firo_core()
+    yield cli
+    cli.stop_firo_core()
 
 
 # TEST DATA
