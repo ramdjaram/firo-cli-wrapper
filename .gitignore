@@ -2,5 +2,5 @@
 LOGS
 firo-cli.iml
 *.log
-.html
-.css
+*.html
+*.css
