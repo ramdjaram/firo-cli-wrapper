@@ -1,4 +1,5 @@
 import json
+import psutil
 from util.logger import logger
 
 
@@ -19,6 +20,13 @@ def is_valid_dict_string(string):
             return True
     except ValueError:
         logger.info(f'String is not an instance of dict or list, parsing skipped.\n{string}')
+    return False
+
+
+def is_process_running(process_name):
+    for proc in psutil.process_iter(['name']):
+        if proc.info['name'] == process_name:
+            return proc
     return False
 
 

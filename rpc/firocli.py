@@ -1,9 +1,8 @@
 import json
-import psutil
 import subprocess
 from time import sleep
 from util.logger import logger
-from util.helper import is_valid_dict_string, print_command_title
+from util.helper import is_valid_dict_string, print_command_title, is_process_running
 
 
 def create_method(call, network, firo_src_dir, datadir=''):
@@ -47,6 +46,7 @@ def create_method(call, network, firo_src_dir, datadir=''):
 
 
 class FiroCli:
+    FIROD_PROCESS_NAME = 'firod'
     DEFAULT_RPC_CALLS = [
         'getrawtransaction',
         'sendrawtransaction',
@@ -74,18 +74,12 @@ class FiroCli:
 
         self.info()
 
-    def is_firo_core_running(self):
-        for proc in psutil.process_iter(['name']):
-            if proc.info['name'] == 'firod':  # Adjust the process name as needed
-                return proc
-        return False
-
     def run_firo_core(self, wait):
-        command = ['./firod', self._network]
+        command = [f'./{self.FIROD_PROCESS_NAME}', self._network]
         if self._datadir:
             command.append(self._datadir)
         try:
-            firod = self.is_firo_core_running()
+            firod = is_process_running(self.FIROD_PROCESS_NAME)
             if firod:
                 logger.warning('Firo Core is already running.')
                 return firod
@@ -115,7 +109,7 @@ class FiroCli:
             raise Exception(error_message)
 
     def stop_firo_core(self):
-        firod = self.is_firo_core_running()
+        firod = is_process_running(self.FIROD_PROCESS_NAME)
         if firod:
             logger.warning('Terminating Firo Core process...')
             firod.terminate()
