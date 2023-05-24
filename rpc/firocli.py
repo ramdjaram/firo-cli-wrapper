@@ -57,6 +57,7 @@ class FiroCli:
         'getblockcount',
         'generate',
         'gettransaction',
+        'getbalance'
     ]
 
     def __init__(self, rpc_calls=None, network='-regtest', firo_src_path=None, datadir=None):
