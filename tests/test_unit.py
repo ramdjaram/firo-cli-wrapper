@@ -4,7 +4,7 @@ import pytest
 # # get all spark addresses
 # spark_addresses = firo_cli.getallsparkaddresses()
 # for p_address in spark_addresses.values():
-#     firo_cli.getsparkaddressbalance(input=p_address)
+#     firo_cli.getsparkaddressbalance(p_address)
 
 @pytest.mark.fstop
 def test_stop_firo_core_process(cli):
@@ -21,30 +21,6 @@ def test_firo_core_should_be_running(cli):
 def test_non_existing_rpc(firo_cli):
     with pytest.raises(AttributeError):
         firo_cli.getnonexisting()
-
-
-@pytest.mark.unit
-def test_getsparkbalance_invalid_key(firo_cli):
-    with pytest.raises(AssertionError):
-        firo_cli.getsparkbalance(bad_key='invalid')
-
-
-@pytest.mark.unit
-def test_getsparkbalance_valid_and_invalid_key(firo_cli):
-    with pytest.raises(Exception):
-        firo_cli.getsparkbalance(input='valid key', bad_key='invalid')
-
-
-@pytest.mark.unit
-def test_getsparkbalance_invalid_value(firo_cli):
-    with pytest.raises(Exception):
-        firo_cli.getsparkbalance(input='invalid value')
-
-
-@pytest.mark.unit
-def test_spendspark_bad_arguments(firo_cli):
-    with pytest.raises(Exception):
-        firo_cli.spendspark(input='invalid value')
 
 
 @pytest.mark.unit

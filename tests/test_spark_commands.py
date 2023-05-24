@@ -43,7 +43,7 @@ def test_getsparkbalance(firo_cli):
 
 @pytest.mark.spark
 def test_getsparkaddressbalance(firo_cli, test_data):
-    firo_cli.getsparkaddressbalance(input=test_data['spark_address1'])
+    firo_cli.getsparkaddressbalance(test_data['spark_address1'])
 
 
 def test_resetsparkmints(firo_cli):

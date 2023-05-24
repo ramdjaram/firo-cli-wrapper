@@ -10,14 +10,6 @@ FIRO_CLI_EXE = 'firo-cli'
 
 
 class FiroCli:
-    DEFAULT_RPC_CALLS = [
-        'getrawtransaction',
-        'sendrawtransaction',
-        'getblockcount',
-        'generate',
-        'gettransaction',
-        'getbalance'
-    ]
 
     def __init__(self, rpc_calls=None, firo_src_path=None, *args, **kwargs):
 
@@ -168,6 +160,10 @@ if __name__ == "__main__":
         'regtest',
         datadir=config.get('FIRO', 'blockchain_datadir'))
     firo_cli.run_firo_core()
+    count = firo_cli.getblockcount()
+    logger.error(count)
+    logger.error(count-1)
     firo_cli.getsparkdefaultaddress()
+    firo_cli.getbalance()
     firo_cli.getsparkaddressbalance('sr17k6c6e576vhj3rvtmdq8lg3uze8s9zj98j2e6zuzj7dlcfslxha7ghh2sdpj8chvm3mhe5ap5nwl4cwcmra29wqtyskp7luhqxxe0xek4s6ct8hz8ytug9p3mamw5yed9083n8q886k6x')
     firo_cli.stop_firo_core()

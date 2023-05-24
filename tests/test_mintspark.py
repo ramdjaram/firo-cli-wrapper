@@ -18,7 +18,7 @@ def test_mintspark_to_private_that_global_balance_increased_by_sent_amount(firo_
 
     # mintspark private transaction
     # send spark to private address
-    list_of_txids = firo_cli.mintspark(input=input_mintspark)
+    list_of_txids = firo_cli.mintspark(input_mintspark)
     global txid
     txid = list_of_txids[0]
 
@@ -27,7 +27,7 @@ def test_mintspark_to_private_that_global_balance_increased_by_sent_amount(firo_
         firo_cli.rebroadcast_transaction(txid)
 
     # generate 1 block
-    firo_cli.generate(input=1)
+    firo_cli.generate(1)
 
     # assert that block count is incremented by 1
     next_block_number = firo_cli.getblockcount()
@@ -51,4 +51,4 @@ def test_mintspark_to_private_that_global_balance_increased_by_sent_amount(firo_
 @pytest.mark.wip
 @pytest.mark.spark
 def test_gettransaction(firo_cli):
-    firo_cli.gettransaction(input=f'{txid}')
+    firo_cli.gettransaction(f'{txid}')
