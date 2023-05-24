@@ -43,7 +43,7 @@ def test_data():
 @fixture(scope='module')
 def input_mintspark(test_data):
     return stringify({
-        test_data['p_address']: {
+        test_data['spark_address1']: {
             'amount': test_data['amount'], 'memo': 'test_memo'
         }
     })

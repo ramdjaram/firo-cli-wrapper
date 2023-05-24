@@ -21,8 +21,8 @@ def test_listsparkspends(firo_cli):
 
 @pytest.mark.noargs
 @pytest.mark.spark
-def test_getsparkdefaultaddress(firo_cli):
-    firo_cli.getsparkdefaultaddress()
+def test_getsparkdefaultaddress(firo_cli, test_data):
+    assert firo_cli.getsparkdefaultaddress()[0] == test_data['spark_default']
 
 
 @pytest.mark.noargs
@@ -43,7 +43,7 @@ def test_getsparkbalance(firo_cli):
 
 @pytest.mark.spark
 def test_getsparkaddressbalance(firo_cli, test_data):
-    firo_cli.getsparkaddressbalance(input=test_data['p_address'])
+    firo_cli.getsparkaddressbalance(input=test_data['spark_address1'])
 
 
 def test_resetsparkmints(firo_cli):
