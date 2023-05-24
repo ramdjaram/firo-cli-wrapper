@@ -3,6 +3,11 @@ from util.logger import logger
 
 
 @pytest.mark.wip
+def test_get_block_count(firo_cli):
+    firo_cli.getblockcount()
+
+
+@pytest.mark.wip
 def test_getsparkbalance(firo_cli):
     spark_balance = firo_cli.getsparkbalance()
 
@@ -11,10 +16,6 @@ def test_getsparkbalance(firo_cli):
 def test_list_spark_mints(firo_cli):
     spark_mints_list = firo_cli.listsparkmints()
     logger.info(spark_mints_list[1]['amount'])
-
-
-def test_get_block_count(firo_cli):
-    firo_cli.getblockcount()
 
 
 @pytest.mark.spark

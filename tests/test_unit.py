@@ -1,6 +1,7 @@
 import pytest
 
 
+@pytest.mark.fstop
 def test_stop_firo_core_process(cli):
     cli.stop_firo_core()
 
@@ -13,7 +14,7 @@ def test_firo_core_should_be_running(cli):
 
 @pytest.mark.unit
 def test_non_existing_rpc(firo_cli):
-    with pytest.raises(AssertionError):
+    with pytest.raises(AttributeError):
         firo_cli.getnonexisting()
 
 

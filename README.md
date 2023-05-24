@@ -4,9 +4,11 @@
 
 >`pytest -m 'wip' --html=artifacts/report.html`
 > 
->`pytest -m 'spark' --html=artifacts/report.html`
+>`pytest -m 'fstop'`
 > 
->`pytest -m 'unit' --html=artifacts/report.html`
+>`pytest -m 'unit'`
+> 
+>`pytest -m 'spark' --html=artifacts/report.html`
 
 
 ### BUILD
