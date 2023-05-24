@@ -91,7 +91,7 @@ class FiroCli:
 
             print_command_title(call, [FIRO_CLI_EXE] + method_options, "@")
             command = self._generate_command(FIRO_CLI_EXE, method_options)
-            self._firo_cli(command)
+            return self._firo_cli(command)
 
         return method
 
@@ -149,8 +149,8 @@ class FiroCli:
         logger.warning('Firo Core is not running. Noting to stop!')
 
     def rebroadcast_transaction(self, txid):
-        raw_tx = self.getrawtransaction(input=txid.strip())
-        self.sendrawtransaction(input=raw_tx.strip())
+        raw_tx = self.getrawtransaction(txid.strip())
+        self.sendrawtransaction(raw_tx.strip())
 
 
 if __name__ == "__main__":
@@ -160,6 +160,12 @@ if __name__ == "__main__":
         'regtest',
         datadir=config.get('FIRO', 'blockchain_datadir'))
     firo_cli.run_firo_core()
+
+    count = int(firo_cli.getblockcount())
+    logger.error(count)
+    logger.error(count - 1)
+
+
     firo_cli.getsparkdefaultaddress()
     firo_cli.getbalance()
     firo_cli.getsparkaddressbalance('sr17k6c6e576vhj3rvtmdq8lg3uze8s9zj98j2e6zuzj7dlcfslxha7ghh2sdpj8chvm3mhe5ap5nwl4cwcmra29wqtyskp7luhqxxe0xek4s6ct8hz8ytug9p3mamw5yed9083n8q886k6x')
