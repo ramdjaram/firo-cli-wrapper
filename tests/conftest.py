@@ -19,7 +19,7 @@ def firo_cli(cli):
     cli.run_firo_core()
 
     # generate blocks
-    BLOCKS = 27
+    BLOCKS = 3
     block_count = int(cli.getblockcount())
     if block_count < BLOCKS:
         delta = BLOCKS-block_count
