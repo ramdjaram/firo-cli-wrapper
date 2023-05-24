@@ -103,8 +103,8 @@ class FiroCli:
 
                 # Wait for the Firo Core process to start running
                 firod_finished = None
-                while firod_finished is None and counter is not (wait if blockchain_check else (wait + 20)):
-                    logger.info(f'Polling Firo Core - attempt: {counter + 1}')
+                while firod_finished is None and counter is not (wait if blockchain_check else (wait + 10)):
+                    logger.debug(f'Polling Firo Core - attempt: {counter + 1}')
                     firod_finished = firod.poll()
                     if firod_finished is not None:
                         error = 'Firo Core stopped due to error!'
@@ -114,10 +114,7 @@ class FiroCli:
                     counter += 1
                 logger.info('Firo Core is running.')
                 if not blockchain_check:
-                    subprocess.run(['kill', '-9', str(firod.pid)], stdout=subprocess.PIPE)
-                    sleep(5)
-                    raise Exception(
-                        'Provided data dir for local blockchain doesn`r exist. Just created. Restart your tests!')
+                    sleep(60)
                 return firod
         except subprocess.CalledProcessError as e:
             error_message = f"Command failed with return code {e.returncode}: {e.output.decode()}"
