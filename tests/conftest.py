@@ -8,6 +8,7 @@ from util import load_json_file, stringify, config
 def cli():
     firo_cli = FiroCli(
         rpc_calls=config.get('FIRO', 'spark_calls'),
+        network=config.get('FIRO', 'network'),
         firo_src_path=config.get('FIRO', 'firo_src'),
         datadir=config.get('FIRO', 'blockchain_datadir'))
     return firo_cli
@@ -19,11 +20,11 @@ def firo_cli(cli):
     cli.run_firo_core()
 
     # generate blocks
-    BLOCKS = 2
+    BLOCKS = 76
     block_count = int(cli.getblockcount())
     logger.info(f"Block count: {block_count}")
     if block_count < BLOCKS:
-        delta = BLOCKS-block_count
+        delta = BLOCKS - block_count
         logger.warning(f'Generating {delta} additional blocks...')
         cli.generate(input=delta)
 

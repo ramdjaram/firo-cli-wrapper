@@ -59,7 +59,7 @@ class FiroCli:
         'gettransaction',
     ]
 
-    def __init__(self, rpc_calls=None, network='-regtest', firo_src_path=None, datadir=''):
+    def __init__(self, rpc_calls=None, network='-regtest', firo_src_path=None, datadir=None):
 
         if firo_src_path is None:
             raise AttributeError('Path to the ./firo-cli must be set')
@@ -70,26 +70,26 @@ class FiroCli:
         self._rpc_calls = set(self.DEFAULT_RPC_CALLS + [item.strip() for item in rpc_calls.split(',')])
         self._network = network
         self._firo_src = firo_src_path
-        # self._data_dir_command_flag
-        self._datadir = f'-datadir={datadir}' if datadir else ''
+        self._datadir = datadir
+        self._datadir_command_flag = f'-datadir={datadir}' if datadir else None
         self._methods = {}
 
         for call in self._rpc_calls:
-            self._methods[call] = create_method(call, self._network, self._firo_src, self._datadir)
+            self._methods[call] = create_method(call, self._network, self._firo_src, self._datadir_command_flag)
 
         self.info()
 
     def run_firo_core(self, wait=5):
 
         blockchain_check = True
-        if not dir_exists(f'{self._datadir.split("=")[1]}/regtest'):
+        if not dir_exists(f'{self._datadir}/regtest'):
             logger.warning('Firo Core is starting without existing datadir for block chaine. '
                            'Need some time to generate it!')
             blockchain_check = False
 
         command = [f'./{FIROD_PROCESS_NAME}', self._network]
         if self._datadir:
-            command.append(self._datadir)
+            command.append(self._datadir_command_flag)
         try:
             firod = is_process_running(FIROD_PROCESS_NAME)
             if firod:
