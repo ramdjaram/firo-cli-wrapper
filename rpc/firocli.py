@@ -70,6 +70,7 @@ class FiroCli:
         self._rpc_calls = set(self.DEFAULT_RPC_CALLS + [item.strip() for item in rpc_calls.split(',')])
         self._network = network
         self._firo_src = firo_src_path
+        # self._data_dir_command_flag
         self._datadir = f'-datadir={datadir}' if datadir else ''
         self._methods = {}
 
@@ -78,11 +79,12 @@ class FiroCli:
 
         self.info()
 
-    def run_firo_core(self, wait=10):
+    def run_firo_core(self, wait=5):
 
         blockchain_check = True
-
         if not dir_exists(f'{self._datadir.split("=")[1]}/regtest'):
+            logger.warning('Firo Core is starting without existing datadir for block chaine. '
+                           'Need some time to generate it!')
             blockchain_check = False
 
         command = [f'./{FIROD_PROCESS_NAME}', self._network]
@@ -103,7 +105,7 @@ class FiroCli:
 
                 # Wait for the Firo Core process to start running
                 firod_finished = None
-                while firod_finished is None and counter is not (wait if blockchain_check else (wait + 10)):
+                while firod_finished is None and counter is not wait:
                     logger.debug(f'Polling Firo Core - attempt: {counter + 1}')
                     firod_finished = firod.poll()
                     if firod_finished is not None:
@@ -114,7 +116,7 @@ class FiroCli:
                     counter += 1
                 logger.info('Firo Core is running.')
                 if not blockchain_check:
-                    sleep(60)
+                    sleep(wait+80)
                 return firod
         except subprocess.CalledProcessError as e:
             error_message = f"Command failed with return code {e.returncode}: {e.output.decode()}"
