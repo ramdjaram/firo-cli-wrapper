@@ -43,7 +43,7 @@ class FiroCli:
                 self._options.append(f'-{value}')
 
         if kwargs:
-            for key, value in kwargs:
+            for key, value in kwargs.items():
                 self._options.append(f'-{key}={value}')
 
         for call in self._rpc_calls:
@@ -59,13 +59,13 @@ class FiroCli:
                 f"No such command as '{attr}' in 'FiroCli'\nAvailable RPC calls: {list(self._methods.keys())}")
 
     def _info(self):
-        logger.info('@@@@@@@ FIRO TESTING TOOL @@@@@@')
+        logger.info('======= FIRO TESTING TOOL =======\n')
         logger.info(f'Firo src directory path: {self._firo_src}')
         logger.info(f'List of supported rpc calls: {self._rpc_calls}')
         logger.info(f'Command options: {self._options}\n')
 
-    def _generate_command(self, exe):
-        command = [f'./{exe}'] + self._options
+    def _generate_command(self, exe, options):
+        command = [f'./{exe}'] + options
         return command
 
     def _firo_cli(self, command):
@@ -90,15 +90,15 @@ class FiroCli:
             assert is_process_running(
                 FIROD_PROCESS_NAME), 'Firo Core should be running. Start Firo Core(firod) process `firo_cli.run_firo_core()`'
 
-            logger.debug(f'Adding "{call}()" method to firo-cli')
-            self._options.append(call)  # add call to command options
+            logger.debug(f'Adding {call}() method to firo-cli')
+            method_options = self._options + [f'{call}'] # add call to command options
 
             if command_argument:
                 # append the arg value to command and parse the arg to string
-                self._options.append(str(command_argument))
+                method_options.append(str(command_argument))
 
-            print_command_title(call, self._options, "@")
-            command = self._generate_command(FIRO_CLI_EXE)
+            print_command_title(call, method_options, "@")
+            command = self._generate_command(FIRO_CLI_EXE, method_options)
             self._firo_cli(command)
 
         return method
@@ -120,7 +120,7 @@ class FiroCli:
                 logger.warning('Firo Core is not running. Starting Firo Core...')
                 print_command_title(FIROD_PROCESS_NAME, self._options, '%')
                 # start Firo Core as a separate process
-                command = self._generate_command(FIROD_PROCESS_NAME)
+                command = self._generate_command(FIROD_PROCESS_NAME, self._options)
                 firod = subprocess.Popen(command, stdout=subprocess.PIPE, cwd=self._firo_src)
                 # Wait for the Firo Core process to start running
                 counter = 0
@@ -163,7 +163,11 @@ class FiroCli:
 
 if __name__ == "__main__":
     firo_cli = FiroCli(
-        rpc_calls=config.get('FIRO', 'spark_calls'),
-        network=config.get('FIRO', 'network'),
-        firo_src_path=config.get('FIRO', 'firo_src'),
+        config.get('FIRO', 'spark_calls'),
+        config.get('FIRO', 'firo_src'),
+        'regtest',
         datadir=config.get('FIRO', 'blockchain_datadir'))
+    firo_cli.run_firo_core()
+    firo_cli.getsparkdefaultaddress()
+    firo_cli.getsparkaddressbalance('sr17k6c6e576vhj3rvtmdq8lg3uze8s9zj98j2e6zuzj7dlcfslxha7ghh2sdpj8chvm3mhe5ap5nwl4cwcmra29wqtyskp7luhqxxe0xek4s6ct8hz8ytug9p3mamw5yed9083n8q886k6x')
+    firo_cli.stop_firo_core()
