@@ -5,9 +5,6 @@ from util.logger import logger
 @pytest.mark.wip
 def test_getsparkbalance(firo_cli):
     spark_balance = firo_cli.getsparkbalance()
-    logger.info(spark_balance['availableBalance'])
-    logger.info(spark_balance['unconfirmedBalance'])
-    logger.info(spark_balance['fullBalance'])
 
 
 @pytest.mark.spark

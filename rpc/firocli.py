@@ -144,6 +144,7 @@ class FiroCli:
         )
         logger.info(f'Firo src directory path: {self._firo_src}')
         logger.info(f'Network used for testing: {self._network}')
+        logger.info(f'Datadir for regtest folder: {self._datadir}')
         logger.info(f'List of supported rpc calls: {self._rpc_calls}\n')
 
     def __getattr__(self, attr):
