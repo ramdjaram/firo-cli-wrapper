@@ -1,53 +1,12 @@
 import json
 import subprocess
 from time import sleep
+from util.config_loader import config
 from util.logger import logger
 from util.helper import is_valid_dict_string, print_command_title, is_process_running, dir_exists
 
 FIROD_PROCESS_NAME = 'firod'
-
-
-def create_method(call, network, firo_src_dir, datadir=''):
-    def method(*args, **kwargs):
-        """A dynamically created method"""
-
-        assert is_process_running(
-            FIROD_PROCESS_NAME), 'Firo Core should be running. Start Firo Core(firod) process `firo_cli.run_firo_core()`'
-
-        invalid_arguments_message = f'Firo-cli command arguments must be key/value pair with "input" as a key. ' \
-                                    f'For example: firo_cli.{call}(input=<command_argument_value>)'
-
-        assert not args, invalid_arguments_message
-
-        if not datadir:
-            command = ['./firo-cli', network, call]
-        else:
-            command = ['./firo-cli', network, datadir, call]
-
-        if kwargs:
-            invalid_key_arguments = [key for key in kwargs.keys() if key != 'input']
-            assert 'input' in kwargs.keys(), f'Invalid command keys: {invalid_key_arguments}. {invalid_arguments_message}'
-            command.append(str(kwargs['input']))  # append the arg value to command and parse the arg to string
-
-        print_command_title(call, command, "@")
-
-        try:
-            # execute the command with firo-cli
-            result = subprocess.run(command, stdout=subprocess.PIPE, cwd=firo_src_dir, check=True)
-
-            # decode the result to string
-            decoded = result.stdout.decode('utf-8')
-            logger.debug(f'Result:\n{decoded}')
-
-            if is_valid_dict_string(decoded):  # parse if json string
-                return json.loads(decoded)
-            return decoded.strip()
-        except subprocess.CalledProcessError as e:
-            error_message = f"Command failed with return code {e.returncode}: {e.output.decode()}"
-            logger.error(error_message)
-            raise Exception(error_message)
-
-    return method
+FIRO_CLI_EXE = 'firo-cli'
 
 
 class FiroCli:
@@ -60,37 +19,98 @@ class FiroCli:
         'getbalance'
     ]
 
-    def __init__(self, rpc_calls=None, network='-regtest', firo_src_path=None, datadir=None):
-
-        if firo_src_path is None:
-            raise AttributeError('Path to the ./firo-cli must be set')
+    def __init__(self, rpc_calls=None, firo_src_path=None, *args, **kwargs):
 
         if rpc_calls is None:
             raise AttributeError('List of names for rpc calls aren`t provided')
 
-        self._rpc_calls = set(self.DEFAULT_RPC_CALLS + [item.strip() for item in rpc_calls.split(',')])
-        self._network = network
-        self._firo_src = firo_src_path
-        self._datadir = datadir
-        self._datadir_command_flag = f'-datadir={datadir}' if datadir else None
+        if firo_src_path is None:
+            raise AttributeError('Path to the ./firo-cli must be set')
+
+        self._options = []
         self._methods = {}
+        self._rpc_calls = set([item.strip() for item in rpc_calls.split(',')])
+        self._firo_src = firo_src_path
+        self._datadir = None
+
+        try:
+            self._datadir = kwargs['datadir']
+        except KeyError as e:
+            logger.warning('-datadir isn`t set. Using default.')
+
+        if args:
+            for value in args:
+                self._options.append(f'-{value}')
+
+        if kwargs:
+            for key, value in kwargs:
+                self._options.append(f'-{key}={value}')
 
         for call in self._rpc_calls:
-            self._methods[call] = create_method(call, self._network, self._firo_src, self._datadir_command_flag)
+            self._methods[call] = self._create_method(call)
 
-        self.info()
+        self._info()
+
+    def __getattr__(self, attr):
+        if attr in self._methods:
+            return self._methods[attr]
+        else:
+            raise AttributeError(
+                f"No such command as '{attr}' in 'FiroCli'\nAvailable RPC calls: {list(self._methods.keys())}")
+
+    def _info(self):
+        logger.info('@@@@@@@ FIRO TESTING TOOL @@@@@@')
+        logger.info(f'Firo src directory path: {self._firo_src}')
+        logger.info(f'List of supported rpc calls: {self._rpc_calls}')
+        logger.info(f'Command options: {self._options}\n')
+
+    def _generate_command(self, exe):
+        command = [f'./{exe}'] + self._options
+        return command
+
+    def _firo_cli(self, command):
+        try:
+            result = subprocess.run(command, stdout=subprocess.PIPE, cwd=self._firo_src, check=True)
+            # decode the result to string
+            decoded = result.stdout.decode('utf-8')
+            logger.debug(f'Result:\n{decoded}')
+            # parse if json string
+            if is_valid_dict_string(decoded):
+                return json.loads(decoded)
+            return decoded.strip()
+        except subprocess.CalledProcessError as e:
+            error_message = f"Command failed with return code {e.returncode}: {e.output.decode()}"
+            logger.error(error_message)
+            raise Exception(error_message)
+
+    def _create_method(self, call):
+        def method(command_argument=None):
+            """A dynamically created method"""
+
+            assert is_process_running(
+                FIROD_PROCESS_NAME), 'Firo Core should be running. Start Firo Core(firod) process `firo_cli.run_firo_core()`'
+
+            logger.debug(f'Adding "{call}()" method to firo-cli')
+            self._options.append(call)  # add call to command options
+
+            if command_argument:
+                # append the arg value to command and parse the arg to string
+                self._options.append(str(command_argument))
+
+            print_command_title(call, self._options, "@")
+            command = self._generate_command(FIRO_CLI_EXE)
+            self._firo_cli(command)
+
+        return method
 
     def run_firo_core(self, wait=5):
 
         blockchain_check = True
-        if not dir_exists(f'{self._datadir}/regtest'):
-            logger.warning('Firo Core is starting without existing datadir for block chaine. '
-                           'Need some time to generate it!')
-            blockchain_check = False
-
-        command = [f'./{FIROD_PROCESS_NAME}', self._network]
         if self._datadir:
-            command.append(self._datadir_command_flag)
+            if not dir_exists(f'{self._datadir}/regtest'):
+                logger.warning('Firo Core is starting without existing datadir for blockchain. '
+                               'Need some time to generate it!')
+                blockchain_check = False
         try:
             firod = is_process_running(FIROD_PROCESS_NAME)
             if firod:
@@ -98,13 +118,12 @@ class FiroCli:
                 return firod
             else:
                 logger.warning('Firo Core is not running. Starting Firo Core...')
-                print_command_title(FIROD_PROCESS_NAME, command, '%')
-                counter = 0
-
+                print_command_title(FIROD_PROCESS_NAME, self._options, '%')
                 # start Firo Core as a separate process
+                command = self._generate_command(FIROD_PROCESS_NAME)
                 firod = subprocess.Popen(command, stdout=subprocess.PIPE, cwd=self._firo_src)
-
                 # Wait for the Firo Core process to start running
+                counter = 0
                 firod_finished = None
                 while firod_finished is None and counter is not wait:
                     logger.debug(f'Polling Firo Core - attempt: {counter + 1}')
@@ -117,7 +136,7 @@ class FiroCli:
                     counter += 1
                 logger.info('Firo Core is running.')
                 if not blockchain_check:
-                    sleep(wait+80)
+                    sleep(wait + 80)
                 return firod
         except subprocess.CalledProcessError as e:
             error_message = f"Command failed with return code {e.returncode}: {e.output.decode()}"
@@ -137,24 +156,14 @@ class FiroCli:
             return
         logger.warning('Firo Core is not running. Noting to stop!')
 
-    def info(self):
-        print_command_title(
-            'FIRO-CLI TESTING TOOL',
-            ['[firo-cli]', '<network>', '<datadir>', '<rpc_call>', '<input>'],
-            '%'
-        )
-        logger.info(f'Firo src directory path: {self._firo_src}')
-        logger.info(f'Network used for testing: {self._network}')
-        logger.info(f'Datadir for regtest folder: {self._datadir}')
-        logger.info(f'List of supported rpc calls: {self._rpc_calls}\n')
-
-    def __getattr__(self, attr):
-        if attr in self._methods:
-            return self._methods[attr]
-        else:
-            raise AttributeError(
-                f"No such command as '{attr}' in 'FiroCli'\nAvailable RPC calls: {list(self._methods.keys())}")
-
     def rebroadcast_transaction(self, txid):
         raw_tx = self.getrawtransaction(input=txid.strip())
         self.sendrawtransaction(input=raw_tx.strip())
+
+
+if __name__ == "__main__":
+    firo_cli = FiroCli(
+        rpc_calls=config.get('FIRO', 'spark_calls'),
+        network=config.get('FIRO', 'network'),
+        firo_src_path=config.get('FIRO', 'firo_src'),
+        datadir=config.get('FIRO', 'blockchain_datadir'))
