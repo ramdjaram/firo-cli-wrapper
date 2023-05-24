@@ -162,8 +162,7 @@ if __name__ == "__main__":
 
     firo_cli.run_firo_core()
     count = int(firo_cli.getblockcount())
-    logger.error(count)
-    logger.error(count - 1)
+    logger.info(count)
     firo_cli.getsparkdefaultaddress()
     firo_cli.getbalance()
     firo_cli.getsparkaddressbalance('sr17k6c6e576vhj3rvtmdq8lg3uze8s9zj98j2e6zuzj7dlcfslxha7ghh2sdpj8chvm3mhe5ap5nwl4cwcmra29wqtyskp7luhqxxe0xek4s6ct8hz8ytug9p3mamw5yed9083n8q886k6x')
