@@ -20,7 +20,7 @@ def firo_cli(cli):
     cli.run_firo_core()
 
     # generate blocks
-    BLOCKS = 1001
+    BLOCKS = 1
     block_count = int(cli.getblockcount())
     logger.info(f"Block count: {block_count}")
     if block_count < BLOCKS:
