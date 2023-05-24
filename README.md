@@ -8,6 +8,8 @@
 > 
 >`pytest -m 'unit'`
 > 
+>`pytest -m 'noargs'`
+> 
 >`pytest -m 'spark' --html=artifacts/report.html`
 
 
