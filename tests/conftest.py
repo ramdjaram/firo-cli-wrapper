@@ -30,7 +30,7 @@ def firo_cli(cli):
 
     yield cli
 
-    cli.stop_firo_core()  # comment in case you not want to stop Firo Core after test suite
+    # cli.stop_firo_core()  # comment in case you not want to stop Firo Core after test suite
 
 
 # TEST DATA

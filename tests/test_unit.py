@@ -1,6 +1,11 @@
 import pytest
 
 
+# # get all spark addresses
+# spark_addresses = firo_cli.getallsparkaddresses()
+# for p_address in spark_addresses.values():
+#     firo_cli.getsparkaddressbalance(input=p_address)
+
 @pytest.mark.fstop
 def test_stop_firo_core_process(cli):
     cli.stop_firo_core()

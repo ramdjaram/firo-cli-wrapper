@@ -42,26 +42,22 @@ def test_getsparkbalance(firo_cli):
 
 
 @pytest.mark.spark
-def test_getsparkaddressbalance(firo_cli):
-    firo_cli.getsparkaddressbalance()
+def test_getsparkaddressbalance(firo_cli, test_data):
+    firo_cli.getsparkaddressbalance(input=test_data['p_address'])
 
 
-@pytest.mark.spark
 def test_resetsparkmints(firo_cli):
     firo_cli.resetsparkmints()
 
 
-@pytest.mark.spark
 def test_setsparkmintstatus(firo_cli):
     firo_cli.setsparkmintstatus()
 
 
-@pytest.mark.spark
 def test_mintspark(firo_cli):
     firo_cli.mintspark()
 
 
-@pytest.mark.spark
 def test_spendspark(firo_cli):
     firo_cli.spendspark()
 

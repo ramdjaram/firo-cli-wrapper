@@ -1,6 +1,8 @@
 import pytest
 from util.logger import logger
 
+txid = ''
+
 
 @pytest.mark.wip
 @pytest.mark.spark
@@ -17,6 +19,8 @@ def test_mintspark_to_private_that_global_balance_increased_by_sent_amount(firo_
     # mintspark private transaction
     # send spark to private addres
     list_of_txids = firo_cli.mintspark(input=input_mintspark)
+    global txid
+    txid = list_of_txids[0]
 
     # re-broadcast transactions
     for txid in list_of_txids:
@@ -44,6 +48,7 @@ def test_mintspark_to_private_that_global_balance_increased_by_sent_amount(firo_
     assert delta_spark == int(float(test_data['amount']) * 100000000)
 
 
+@pytest.mark.wip
 @pytest.mark.spark
 def test_gettransaction(firo_cli):
-    firo_cli.gettransaction(input='28aee2443dafeb1e584d334e2964d26252872063e66ac3d012894514478060f7')
+    firo_cli.gettransaction(input=f'{txid}')
