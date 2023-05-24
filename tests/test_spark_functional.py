@@ -35,5 +35,3 @@ def test_mintspark_and_generate(firo_cli, input_mintspark, test_data):
 @pytest.mark.spark
 def test_gettransaction(firo_cli):
     firo_cli.gettransaction(input='28aee2443dafeb1e584d334e2964d26252872063e66ac3d012894514478060f7')
-
-
