@@ -17,7 +17,7 @@ def test_mintspark_to_private_that_global_balance_increased_by_sent_amount(firo_
     block_number = firo_cli.getblockcount()
 
     # mintspark private transaction
-    # send spark to private addres
+    # send spark to private address
     list_of_txids = firo_cli.mintspark(input=input_mintspark)
     global txid
     txid = list_of_txids[0]
