@@ -25,7 +25,6 @@ def test_getsparkdefaultaddress(firo_cli, test_data):
     assert firo_cli.getsparkdefaultaddress()[0] == test_data['spark_default']
 
 
-@pytest.mark.wip
 @pytest.mark.noargs
 @pytest.mark.spark
 def test_getallsparkaddresses(firo_cli):
