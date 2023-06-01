@@ -4,7 +4,6 @@ from util.logger import logger
 txid = ''
 
 
-@pytest.mark.wip
 @pytest.mark.spark
 def test_mintspark_to_private_that_global_balance_increased_by_sent_amount(firo_cli, input_mintspark, test_data):
 
@@ -48,7 +47,6 @@ def test_mintspark_to_private_that_global_balance_increased_by_sent_amount(firo_
     assert delta_spark == int(float(test_data['amount']) * 100000000)
 
 
-@pytest.mark.wip
 @pytest.mark.spark
 def test_gettransaction(firo_cli):
     firo_cli.gettransaction(f'{txid}')
