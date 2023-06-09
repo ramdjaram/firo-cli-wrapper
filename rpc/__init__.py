@@ -1,1 +1,1 @@
-from .rpc import *
+from .firocli import *

@@ -1,30 +1,49 @@
-from bitcoinrpc.authproxy import AuthServiceProxy
 from pytest import fixture
-
 from rpc import *
+from util import load_json_file, stringify, config
 
 
+# Firo Core not started
 @fixture(scope='module')
-def rpc_calls():
-    return [
-        'listsparkminds',
-        'mintspark',
-        'spentspark',
-    ]
+def cli():
+    firo_cli = FiroCli(
+        config.get('FIRO', 'spark_calls'),
+        config.get('FIRO', 'firo_src'),
+        config.get('FIRO', 'network'),
+        datadir=config.get('FIRO', 'blockchain_datadir'))
+    return firo_cli
 
 
+# firo-cli started Firo Core
 @fixture(scope='module')
-def rpc(rpc_calls):
-    return Rpc(rpc_calls)
+def firo_cli(cli):
+    cli.run_firo_core()
+
+    # generate blocks
+    BLOCKS = int(config.get('FIRO', 'blocks_number'))
+    block_count = int(cli.getblockcount())
+    logger.info(f"Block count: {block_count}")
+    if block_count < BLOCKS:
+        delta = BLOCKS - block_count
+        logger.warning(f'Generating {delta} additional blocks...')
+        cli.generate(delta)
+
+    yield cli
+
+    # cli.stop_firo_core()  # comment in case you not want to stop Firo Core after test suite
 
 
+# TEST DATA
 @fixture(scope='module')
-def rpc_connection():
-    rpc_user = "your_rpc_user"
-    rpc_password = "your_rpc_password"
-    rpc_host = "127.0.0.1"
-    rpc_port = 8395
+def test_data():
+    return load_json_file(config.get('TESTDATA', 'inputs'))
 
-    rpc_connection = AuthServiceProxy(f"http://{rpc_user}:{rpc_password}@{rpc_host}:{rpc_port}")
-    return rpc_connection.getinfo()
 
+# INPUTS
+@fixture(scope='module')
+def input_mintspark(test_data):
+    return stringify({
+        test_data['spark_address1']: {
+            'amount': test_data['amount'], 'memo': 'test_memo'
+        }
+    })

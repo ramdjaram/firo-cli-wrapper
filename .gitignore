@@ -1,2 +1,7 @@
 .idea
+LOGS
+artifacts
 firo-cli.iml
+*.log
+*.html
+*.css
